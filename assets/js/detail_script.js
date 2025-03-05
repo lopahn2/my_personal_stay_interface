@@ -94,7 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
             introduction: '여행을 통해 새로운 문화와 삶의 관점을 배우고 싶어요.',
             imageUrl: 'https://i.namu.wiki/i/ORhFWV_tmQ4aZcyYeT9hmGT4VFbwXgsxMv5pltqwy6TjLJ_GJ89zJ3-3iu4ERrQBf9QdDntyyh_8IszeRzBFYJ8Q27UcMPCgg33ulQo8oy4vC6hEdAEiYEd45pPOdDHQ1CMPBPA--SmONHtLfwaTVw.webp',
             tags: ['따뜻한', '배움']
-        }
+        },
     ];
 
     createProfileCards(sampleProfiles);
@@ -111,12 +111,17 @@ document.addEventListener('DOMContentLoaded', () => {
         mbtiScoreBarFill2.style.width = '60%';
     }, 500);
 
-    // 25% 너비로 애니메이션 적용
-    setTimeout(() => {
-        
-    }, 700);
 });
 
-document.addEventListener('DOMContentLoaded', () => {
-
+document.querySelector(".logout-btn").addEventListener("click", function (event) {
+    event.preventDefault();
+    localStorage.removeItem("token");
+    alert("로그아웃되었습니다.");
+    window.location.href = "login.html";
 });
+
+const logo =  document.querySelector(".logo");
+logo.addEventListener("click", function (event) {
+    window.location.href = "login.html";
+});
+
