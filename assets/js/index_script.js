@@ -25,35 +25,52 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // ✅ 2. 전체 게스트하우스 목록 (추후 서버에서 가져와야 함)
     const dataList = [
-        { name: "서울 한옥 게스트하우스", score: 92, recommended: true, link: "detail.html" },
-        { name: "부산 바다 전망 게스트하우스", score: 85, recommended: true, link: "detail.html" },
-        { name: "제주 오름 게스트하우스", score: 78, recommended: true, link: "detail.html" },
-        { name: "창원 휴식 게스트하우스", score: 95, recommended: false, link: "detail.html" }
+        { name: "서울 한옥 게스트하우스", score: 92, location: "서울", detailUrl: "detail.html", imageUrl: "https://image.theminda.com/data/goods/3000/3673/goods/16ed717b7ef90bbdf0922d24a23da20b.jpg" },
+        { name: "부산 바다 전망 게스트하우스", score: 85, location: "부산", detailUrl: "detail.html", imageUrl: "https://pix10.agoda.net/hotelImages/746/746727/746727_15071417360032291638.jpg?ca=4&ce=1&s=414x232&ar=16x9" },
+        { name: "제주 오름 게스트하우스", score: 78, location: "제주", detailUrl: "detail.html", imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQN82oI98qPmlRI4kmNB-Im7nYEc7hQXhQUfA&s" },
+        { name: "강릉 휴식 게스트하우스", score: 95, location: "강릉", detailUrl: "detail.html", imageUrl: "https://cdn.constimes.co.kr/news/photo/202309/242299_49361_1946.jpg" },
+        { name: "서울 한옥 게스트하우스", score: 92, location: "서울", detailUrl: "detail.html", imageUrl: "https://image.theminda.com/data/goods/3000/3673/goods/16ed717b7ef90bbdf0922d24a23da20b.jpg" },
+        { name: "부산 바다 전망 게스트하우스", score: 85, location: "부산", detailUrl: "detail.html", imageUrl: "https://pix10.agoda.net/hotelImages/746/746727/746727_15071417360032291638.jpg?ca=4&ce=1&s=414x232&ar=16x9" },
+        { name: "제주 오름 게스트하우스", score: 78, location: "제주", detailUrl: "detail.html", imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQN82oI98qPmlRI4kmNB-Im7nYEc7hQXhQUfA&s" },
+        { name: "강릉 휴식 게스트하우스", score: 95, location: "강릉", detailUrl: "detail.html", imageUrl: "https://cdn.constimes.co.kr/news/photo/202309/242299_49361_1946.jpg" }
     ];
-    const listElement = document.getElementById("list");
+    const cardContainer = document.getElementById("card-container");
 
     // ✅ 게스트하우스 목록 UI 생성
     dataList.forEach(item => {
-        const div = document.createElement("div");
-        div.className = "list-item" + (item.recommended ? " recommended" : " general");
+        const cardHTML = `
+                    <div class="col-sm-6 col-md-4">
+                        <div class="card" style="width: 18rem;">
+                            <img src="${item.imageUrl}" class="card-img-top" alt="${item.name}">
+                            <div class="card-body">
+                                <h5 class="card-title">${item.name}</h5>
+                                <p class="card-text">${item.score}점, ${item.location}</p>
+                                <a href="${item.detailUrl}" class="btn btn-detail">상세보기</a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+        cardContainer.innerHTML += cardHTML;
+        // const div = document.createElement("div");
+        // div.className = "list-item" + (item.recommended ? " recommended" : " general");
 
-        const starSpan = document.createElement("span");
-        starSpan.className = "star";
-        starSpan.textContent = item.recommended ? "★" : "";
+        // const starSpan = document.createElement("span");
+        // starSpan.className = "star";
+        // starSpan.textContent = item.recommended ? "★" : "";
 
-        const nameLink = document.createElement("a");
-        nameLink.className = "name-link";
-        nameLink.textContent = item.name;
-        nameLink.href = item.link;
+        // const nameLink = document.createElement("a");
+        // nameLink.className = "name-link";
+        // nameLink.textContent = item.name;
+        // nameLink.href = item.link;
 
-        const scoreSpan = document.createElement("span");
-        scoreSpan.className = "score-circle";
-        scoreSpan.textContent = item.score;
+        // const scoreSpan = document.createElement("span");
+        // scoreSpan.className = "score-circle";
+        // scoreSpan.textContent = item.score;
 
-        div.appendChild(starSpan);
-        div.appendChild(nameLink);
-        div.appendChild(scoreSpan);
-        listElement.appendChild(div);
+        // div.appendChild(starSpan);
+        // div.appendChild(nameLink);
+        // div.appendChild(scoreSpan);
+        // listElement.appendChild(div);
     });
 
     // ✅ 3. 찜한 게스트하우스 목록
