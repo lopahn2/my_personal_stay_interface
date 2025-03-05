@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>텅~</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom Styles -->
+    <style>
+        body {
+            background-color: #f8f8f8;
+            font-family: 'Noto Sans KR', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .empty-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background-color: white;
+            width: 80%;
+            max-width: 800px;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 48px;
+            font-weight: bold;
+            color: #6c47ff;
+            margin-bottom: 20px;
+        }
+
+        .empty-text {
+            font-size: 20px;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .empty-image {
+            width: 200px;
+            height: 200px;
+            background-color: #e6e6e6; /* 배경색 추가 */
+            border-radius: 50%; /* 원형으로 만들기 */
+            overflow: hidden; /* 이미지가 원형을 벗어나지 않도록 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .empty-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* 이미지가 영역에 맞게 채워지도록 */
+        }
+
+        .action-button {
+            background-color: #6c47ff;
+            color: white;
+            font-size: 16px;
+            padding: 12px 30px;
+            border-radius: 8px;
+            border: none;
+            text-decoration: none;
+            margin-top: 20px;
+        }
+
+        .action-button:hover {
+            background-color: #5733d1;
+        }
+
+        .back-home {
+            color: #6c47ff;
+            text-decoration: none;
+            font-size: 16px;
+            margin-top: 15px;
+        }
+
+        .back-home:hover {
+            text-decoration: underline;
+        }
+
+    </style>
+</head>
+
+<body>
+    <div class="empty-wrapper">
+        <div class="empty-image">
+            <img src="./src/data/텅.png" alt="텅 Illustration">
+        </div>
+        <h1>텅~</h1>
+        <p class="empty-text">아직 준비되지 않은 페이지입니다. <br> 다음엔 꼭 만들어볼게요.</p>
+        <a href="./login.html" class="action-button">돌아가기</a>
+    </div>
+</body>
+
+</html>
