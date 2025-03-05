@@ -102,10 +102,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
 document.addEventListener('DOMContentLoaded', () => {
     const mbtiScoreBarFill = document.getElementById('mbtiScoreBarFill');
+    const mbtiScoreBarFill2 = document.getElementById('mbtiScoreBarFill2');
     const mbtiScoreText = document.getElementById('mbtiScoreText');
     
     // 25% 너비로 애니메이션 적용
     setTimeout(() => {
         mbtiScoreBarFill.style.width = '25%';
+        mbtiScoreBarFill2.style.width = '60%';
     }, 500);
+
+    // 25% 너비로 애니메이션 적용
+    setTimeout(() => {
+        
+    }, 700);
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+
 });

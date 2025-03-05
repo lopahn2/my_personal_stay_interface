@@ -349,7 +349,7 @@ body {
 
 .profile-tag {
     background-color: var(--accent-color-3);
-    color: var(--gradient-start);
+    color: var(--accent-color-1);
     padding: 3px 10px;
     border-radius: 20px;
     font-size: 12px;
