@@ -17,7 +17,7 @@ body {
 .header {
     width: 100%;
     height: 60px;
-    background: #9999FF;
+    background: #bdaeff;
     color: white;
     display: flex;
     justify-content: space-between;
@@ -34,16 +34,17 @@ body {
 
 .logout-btn {
     background: white;
-    color: #9999FF;
+    color: #bdaeff;
     padding: 8px 15px;
     border-radius: 5px;
     text-decoration: none;
-    font-weight: bold;
+    /* font-weight: bold; */
     transition: 0.3s;
+    font-size: 16px;
 }
 
 .logout-btn:hover {
-    background: #e3f2fd;
+    background: #dcd6f7;
 }
 
 /* 컨테이너 */
@@ -73,7 +74,7 @@ body {
 .profile-img {
     width: 250px;
     height: 250px;
-    background-color: #9999FF;
+    background-color: #dcd6f7;
     border-radius: 50%;
     margin: 0 auto 10px;
 }
@@ -158,13 +159,13 @@ body {
 }
 
 .recommended {
-    border-left: 5px solid #9999FF;
+    border-left: 5px solid #bdaeff;
     font-weight: bold;
 }
 
 .star {
     font-size: 20px;
-    color: #9999FF;
+    color: #bdaeff;
 }
 
 .score-circle {
@@ -180,11 +181,11 @@ body {
 }
 
 .recommended .score-circle {
-    background-color: #9999FF; /* 추천 게스트하우스 - 파란색 */
+    background-color: #bdaeff;
 }
 
 .general .score-circle {
-    background-color: #bdbdbd; /* 일반 게스트하우스 - 회색 */
+    background-color: #bdbdbd;
 }
 
 .name-link {
