@@ -1,5 +1,7 @@
 document.addEventListener("DOMContentLoaded", async () => {
     const guesthouseId = getGuesthouseIdFromQuery(); // ✅ URL에서 id 가져오기
+    const token = localStorage.getItem("token");
+    const memberId = parseJwt(token).memberId;
 
     if (!guesthouseId) {
         alert("잘못된 접근입니다.");
@@ -23,7 +25,7 @@ document.addEventListener("DOMContentLoaded", async () => {
  */
 const getGuesthouseIdFromQuery = () => {
     const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get("id");
+    return Number(urlParams.get("id"));
 };
 
 /**
@@ -150,11 +152,15 @@ const createProfileCards = (profileList) => {
  */
 const applyToGuesthouse = async () => {
     const url = `http://localhost:9000/status/book`; // ✅ API URL (수정 가능)
-
+    
+    const token = localStorage.getItem("token");
+    const memberId = parseJwt(token).memberId;
     const requestBody = {
-        memberId: localStorage.getItem("memberId"), // ✅ 현재 로그인한 사용자 ID (localStorage에서 가져옴)
+        memberId: memberId, // ✅ 현재 로그인한 사용자 ID (localStorage에서 가져옴)
         guestHouseId: getGuesthouseIdFromQuery(),
         bookReqDto: { flag: true }, // ✅ 신청 (bookReqDto.flag = true)
+        likeReqDto: { flag: false },
+        usedReqDto: { flag: false }
     };
     console.log(requestBody);
     try {
@@ -162,7 +168,7 @@ const applyToGuesthouse = async () => {
         const response = await fetch(url, {
             method: "POST",
             headers: {
-                "Authorization": `Bearer ${jwt}`,
+                "Authorization": `Bearer ${token}`,
                 "Content-Type": "application/json"
             },
             body: JSON.stringify(requestBody)
@@ -188,7 +194,7 @@ const withdrawToGuesthouse = async (jwt) => {
     const url = `http://localhost:9000/status/book`; // ✅ API URL (수정 가능)
 
     const requestBody = {
-        memberId: getMemberIdFromJWT(), // ✅ 현재 로그인한 사용자 ID
+        memberId: memberId, // ✅ 현재 로그인한 사용자 ID
         guestHouseId: guestHouseId,
         bookReqDto: { flag: false } // ✅ 취소 (bookReqDto.flag = false)
     };
@@ -228,3 +234,16 @@ const getMemberIdFromJWT = (jwt) => {
         return null; // 에러 발생 시 null 반환
     }
 };
+
+
+function parseJwt(token) {
+    try {
+        const base64Url = token.split('.')[1]; // payload 부분 추출
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const decoded = decodeURIComponent(escape(atob(base64))); // ✅ UTF-8 변환 적용
+        return JSON.parse(decoded); // JSON 파싱
+    } catch (e) {
+        console.error("Invalid JWT Token", e);
+        return null;
+    }
+}
