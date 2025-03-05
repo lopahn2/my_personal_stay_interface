@@ -122,6 +122,6 @@ document.querySelector(".logout-btn").addEventListener("click", function (event)
 
 const logo =  document.querySelector(".logo");
 logo.addEventListener("click", function (event) {
-    window.location.href = "login.html";
+    window.location.href = "index.html";
 });
 
