@@ -1,0 +1,205 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
+}
+
+body {
+    background-color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 70px; /* 헤더 공간 확보 */
+}
+
+/* 헤더 스타일 */
+.header {
+    width: 100%;
+    height: 60px;
+    background: #9999FF;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    font-size: 18px;
+    font-weight: bold;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.logout-btn {
+    background: white;
+    color: #9999FF;
+    padding: 8px 15px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.logout-btn:hover {
+    background: #e3f2fd;
+}
+
+/* 컨테이너 */
+.container {
+    width: 90%;
+    /* max-width: 1000px; */
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.content {
+    display: flex;
+    gap: 20px;
+}
+
+/* 왼쪽 프로필 */
+.left {
+    width: 30%;
+    background: #f0f0fd;
+    padding: 20px;
+    border-radius: 15px;
+    text-align: center;
+}
+
+.profile-img {
+    width: 250px;
+    height: 250px;
+    background-color: #9999FF;
+    border-radius: 50%;
+    margin: 0 auto 10px;
+}
+
+.profile-info p {
+    font-size: 14px;
+    margin: 5px 0;
+}
+
+/* 찜한목록 & 이용한 목록 */
+.wishlist-usedlist {
+    margin-top: 15px;
+    text-align: center;
+}
+
+.list-wrapper {
+    display: flex;
+    flex-direction: row; /* 가로 정렬 */
+    justify-content: space-between; /* 좌우로 정렬 */
+    gap: 20px;
+    padding-top: 20px;
+}
+
+.list-section {
+    width: 50%; /* 반반 차지하도록 설정 */
+    text-align: center;
+}
+
+.list-title {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.list-column {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.list-item-small {
+    width: 80%;
+    height: 50px;
+    background: white;
+    border-radius: 5px;
+    margin: 0 auto;
+    transition: 0.3s;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+}
+
+.list-item-small:hover {
+    background: #f5f5f5;
+    transform: translateY(-3px);
+}
+
+/* 오른쪽 리스트 */
+.right {
+    width: 70%;
+}
+
+.list-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.list-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px;
+    border-radius: 10px;
+    background: white;
+    border: 1px solid #e3f2fd;
+    transition: 0.3s;
+}
+
+.list-item:hover {
+    background: #f5f5f5;
+    transform: translateY(-3px);
+}
+
+.recommended {
+    border-left: 5px solid #9999FF;
+    font-weight: bold;
+}
+
+.star {
+    font-size: 20px;
+    color: #9999FF;
+}
+
+.score-circle {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: bold;
+    color: white;
+}
+
+.recommended .score-circle {
+    background-color: #9999FF; /* 추천 게스트하우스 - 파란색 */
+}
+
+.general .score-circle {
+    background-color: #bdbdbd; /* 일반 게스트하우스 - 회색 */
+}
+
+.name-link {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+@media (max-width: 768px) {
+    .content {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .left, .right {
+        width: 100%;
+    }
+}
