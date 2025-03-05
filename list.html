@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>MBTI 게스트하우스 - 리스트 페이지</title>
+
+    <!-- Bootstrap CSS 링크 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/css/styles.css" rel="stylesheet">
+</head>
+<body>
+
+    <!-- ✅ 네비게이션 바 -->
+    <nav class="navbar navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html">MBTI 게스트하우스</a>
+            <a class="nav-link" href="login.html">로그아웃</a>
+        </div>
+    </nav>
+
+    <!-- ✅ 메인 콘텐츠 (게스트하우스 목록) -->
+    <div class="container mt-5">
+        <h3>추천 게스트하우스</h3>
+        <div class="list-group">
+            <!-- 클릭 시 상세 페이지로 이동 -->
+            <a href="#" class="list-group-item list-group-item-action" onclick="navigateTo('detail.html')">⭐ 추천 게스트하우스 1</a>
+            <a href="#" class="list-group-item list-group-item-action" onclick="navigateTo('detail.html')">⭐ 추천 게스트하우스 2</a>
+        </div>
+
+        <h3 class="mt-4">일반 게스트하우스</h3>
+        <div class="list-group">
+            <a href="#" class="list-group-item list-group-item-action" onclick="navigateTo('detail.html')">일반 게스트하우스 1</a>
+            <a href="#" class="list-group-item list-group-item-action" onclick="navigateTo('detail.html')">일반 게스트하우스 2</a>
+        </div>
+
+        <!-- 메인 페이지로 돌아가는 버튼 -->
+        <button class="btn btn-secondary mt-4" onclick="navigateTo('index.html')">메인으로</button>
+    </div>
+
+    <script src="assets/js/scripts.js"></script>
+</body>
+</html>
