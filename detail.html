@@ -4,16 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>게스트하우스 디테일</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://hangeul.pstatic.net/hangeul_static/webfont/NanumSquareNeo.css" rel="stylesheet">
-    <!-- detail css -->
-    <link href="assets/css/detail_style.css" rel="stylesheet">
-    <style>
 
-    </style>
+    <!-- ✅ Bootstrap CSS (부트스트랩 사용) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- ✅ 한글 폰트 (나눔스퀘어 네오) -->
+    <link href="https://hangeul.pstatic.net/hangeul_static/webfont/NanumSquareNeo.css" rel="stylesheet">
+
+    <!-- ✅ 상세 페이지 전용 CSS -->
+    <link href="assets/css/detail_style.css" rel="stylesheet">
 </head>
 
 <body class="full-height">
+    <!-- ✅ 상단 헤더 -->
     <div class="header">
         <div class="logo-container">
             <img src="./src/data/로고.png" alt="베네사진 로고" class="logo" style="cursor: pointer;">
@@ -21,36 +24,48 @@
         </div> 
         <a href="#" class="logout-btn">로그아웃</a>
     </div>
-        <div class="main-container">
-            <div class="detail-grid">
-                <div class="left-panel">
-                    
-                    <img src="http://the-plus.net/wp-content/uploads/2019/05/001.jpg" alt="게스트하우스 이미지" class="left-panel-image">
-                    <button class="bookmark-btn" onclick="toggleBookmark(this)">
-                        ♥
-                    </button>
-                    <div>
-                        <div class="mbti-score-container">
-                            <div class="mbti-compatibility-label">
-                                <span>MBTI 점수</span>
-                                <span id="mbtiScoreText">25%</span>
-                            </div>
-                            <div class="mbti-score-bar">
-                                <div id="mbtiScoreBarFill" class="mbti-score-bar-fill"></div>
-                            </div>
-                            <div class="mbti-compatibility-hint">
-                                👀 ESFJ와 이 숙소와의 매칭 점수는 25점!
-                            </div>
+
+    <!-- ✅ 메인 콘텐츠 영역 -->
+    <div class="main-container">
+        <div class="detail-grid">
+
+            <!-- ✅ 왼쪽 패널 (게스트하우스 이미지 & 신청 버튼) -->
+            <div class="left-panel">
+                <!-- 게스트하우스 대표 이미지 -->
+                <img src="http://the-plus.net/wp-content/uploads/2019/05/001.jpg" alt="게스트하우스 이미지" class="left-panel-image">
+
+                <!-- 찜하기 버튼 -->
+                <button class="bookmark-btn" onclick="toggleBookmark(this)">
+                    ♥
+                </button>
+
+                <!-- MBTI 매칭 점수 -->
+                <div>
+                    <div class="mbti-score-container">
+                        <div class="mbti-compatibility-label">
+                            <span>MBTI 점수</span>
+                            <span id="mbtiScoreText">25%</span>
+                        </div>
+                        <div class="mbti-score-bar">
+                            <div id="mbtiScoreBarFill" class="mbti-score-bar-fill"></div>
+                        </div>
+                        <div class="mbti-compatibility-hint">
+                            👀 ESFJ와 이 숙소와의 매칭 점수는 25점!
                         </div>
                     </div>
-                    <div class="action-buttons">
-                        <button class="btn-custom" onclick="applyToGuesthouse()">신청하기</button>
-                        <button class="btn-custom" onclick="withdrawToGuesthouse()">취소하기</button>
-                    </div>
-                </div> 
+                </div>
 
+                <!-- 신청 & 취소 버튼 -->
+                <div class="action-buttons">
+                    <button class="btn-custom" onclick="applyToGuesthouse()">신청하기</button>
+                    <button class="btn-custom" onclick="withdrawToGuesthouse()">취소하기</button>
+                </div>
+            </div> 
+
+            <!-- ✅ 오른쪽 패널 (게스트하우스 정보 & 신청자 목록) -->
             <div class="right-panel">
                 <div>
+                    <!-- 태그 리스트 -->
                     <div class="tag-list">
                         <span class="profile-tag">조용한</span>
                         <span class="profile-tag">친절한</span>
@@ -62,6 +77,7 @@
                     <h3 class="mb-3 head-title">평화로운 게스트하우스</h3>
                     <p class="text-muted mb-4">자연과 함께하는 편안한 휴식처, 당신만의 특별한 공간을 만나보세요.</p>
 
+                    <!-- 현재 신청 인원 및 진행 바 -->
                     <div class="mb-4">
                         <div class="mbti-score-container">
                             <div class="mbti-compatibility-label">
@@ -75,18 +91,18 @@
                     </div>
                 </div>
 
+                <!-- ✅ 같이 지낼 사람들 정보 -->
                 <div id="profileSection" class="profiles-blurred">
                     <h5 class="mb-4 head-title">같이 지낼 사람들</h5>
                     <div class="profile-container" id="profileContainer">
-                        <!-- Profiles will be dynamically added here -->
+                        <!-- 신청자 프로필이 동적으로 추가될 예정 -->
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- detail script  -->
-    <script src="assets/js/detail_script.js"></script>
- 
+    <!-- ✅ JavaScript 파일 로드 -->
+    <script src="assets/js/detail_script__.js"></script>
 </body>
 </html>
