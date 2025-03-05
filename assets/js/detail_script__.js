@@ -1,4 +1,20 @@
 document.addEventListener("DOMContentLoaded", async () => {
+    const logo =  document.querySelector(".logo");
+    logo.addEventListener("click", function (event) {
+        window.location.href = "index.html";
+    });
+
+
+    const mbtiScoreBarFill = document.getElementById('mbtiScoreBarFill');
+    const mbtiScoreBarFill2 = document.getElementById('mbtiScoreBarFill2');
+    const mbtiScoreText = document.getElementById('mbtiScoreText');
+    
+    // 25% 너비로 애니메이션 적용
+    setTimeout(() => {
+        mbtiScoreBarFill.style.width = '25%';
+        mbtiScoreBarFill2.style.width = '60%';
+    }, 500);
+
     const guesthouseId = getGuesthouseIdFromQuery(); // ✅ URL에서 id 가져오기
     const token = localStorage.getItem("token");
     const memberId = parseJwt(token).memberId;
@@ -14,6 +30,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         updateGuesthouseUI(guesthouseData); // ✅ UI 업데이트
         const profileList = await fetchProfiles(guesthouseId); // ✅ 함께 지낼 사람 목록 불러오기
         createProfileCards(profileList); // ✅ 프로필 UI 업데이트
+        /**
+         * TODO
+         * 게스트하우스 페이지 열리는 순간에 신청 된 게스트하우스일 경우 미리 블러 해제 처리
+         * 좋아요 버튼 기능 구현
+         * 
+         */
     } catch (error) {
         console.error("데이터 로드 오류:", error);
         alert("게스트하우스 정보를 불러오는 중 문제가 발생했습니다.");
@@ -164,7 +186,6 @@ const applyToGuesthouse = async () => {
     };
     console.log(requestBody);
     try {
-        console.log("1");
         const response = await fetch(url, {
             method: "POST",
             headers: {
@@ -173,13 +194,8 @@ const applyToGuesthouse = async () => {
             },
             body: JSON.stringify(requestBody)
         });
-
-        console.log("2");
         if (!response.ok) throw new Error("게스트하우스 신청에 실패했습니다.");
-
-        console.log("3");
         alert("신청이 완료되었습니다!");
-        // window.location.reload(); // ✅ 신청 후 페이지 새로고침
         document.getElementById('profileSection').classList.remove('profiles-blurred');
 
     } catch (error) {
@@ -193,31 +209,33 @@ const applyToGuesthouse = async () => {
  */
 const withdrawToGuesthouse = async (jwt) => {
     const url = `http://localhost:9000/status/book`; // ✅ API URL (수정 가능)
-
+    
+    const token = localStorage.getItem("token");
+    const memberId = parseJwt(token).memberId;
     const requestBody = {
-        memberId: memberId, // ✅ 현재 로그인한 사용자 ID
-        guestHouseId: guestHouseId,
-        bookReqDto: { flag: false } // ✅ 취소 (bookReqDto.flag = false)
+        memberId: memberId, // ✅ 현재 로그인한 사용자 ID (localStorage에서 가져옴)
+        guestHouseId: getGuesthouseIdFromQuery(),
+        bookReqDto: { flag: false }, // ✅ 신청 (bookReqDto.flag = true)
+        likeReqDto: { flag: false },
+        usedReqDto: { flag: false }
     };
-
+    console.log(requestBody);
     try {
         const response = await fetch(url, {
             method: "POST",
             headers: {
-                "Authorization": `Bearer ${jwt}`,
+                "Authorization": `Bearer ${token}`,
                 "Content-Type": "application/json"
             },
             body: JSON.stringify(requestBody)
         });
-
-        if (!response.ok) throw new Error("신청 취소에 실패했습니다.");
-
-        alert("신청이 취소되었습니다.");
-        window.location.reload(); // ✅ 취소 후 페이지 새로고침
+        if (!response.ok) throw new Error("게스트하우스 신청 취소에 실패했습니다.");
+        alert("취소가 완료되었습니다!");
+        document.getElementById('profileSection').classList.add('profiles-blurred');
 
     } catch (error) {
-        console.error("취소 오류:", error);
-        alert("취소 중 문제가 발생했습니다.");
+        console.error("신청 오류:", error);
+        alert("신청 중 문제가 발생했습니다.");
     }
 };
 
@@ -248,3 +266,42 @@ function parseJwt(token) {
         return null;
     }
 }
+
+function toggleBookmark(btn) {
+    btn.classList.toggle('active');
+}
+
+
+
+document.querySelector(".logout-btn").addEventListener("click", function (event) {
+    event.preventDefault();
+    localStorage.removeItem("token");
+    alert("로그아웃되었습니다.");
+    window.location.href = "login.html";
+});
+
+// New fade-in animations
+const fadeInElements = [
+    '.header',
+    '.left-panel',
+    '.right-panel',
+
+    '.mbti-score-container',
+    '.action-buttons',
+    '.profile-container'
+];
+
+// Staggered fade-in animation
+fadeInElements.forEach((selector, index) => {
+    const element = document.querySelector(selector);
+    if (element) {
+        element.style.opacity = '0';
+        element.style.transform = 'translateY(20px)';
+        
+        setTimeout(() => {
+            element.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+            element.style.opacity = '1';
+            element.style.transform = 'translateY(0)';
+        }, 200 * (index + 1)); // Staggered delay
+    }
+});
