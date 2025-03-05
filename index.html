@@ -5,55 +5,61 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>My Personal Stay</title>
     
-    <!-- Bootstrap CSS 링크 -->
+    <!-- ✅ Bootstrap CSS (부트스트랩을 사용한 스타일링) -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- 프로젝트 전용 CSS -->
+    
+    <!-- ✅ 프로젝트 전용 CSS -->
     <link href="assets/css/index_style.css" rel="stylesheet">
 </head>
 <body>
-    <script>
-        const jwt = localStorage.getItem("token");
-        alert(jwt);
 
+    <script>
+        // ✅ 저장된 JWT 토큰 가져오기 (향후 서버 인증 요청 시 필요)
+        const jwt = localStorage.getItem("token");
+        // console.log(jwt); // 디버깅용 (필요 시 주석 해제)
     </script>
 
+    <!-- ✅ 헤더 영역 (사이트 제목 + 로그아웃 버튼) -->
     <div class="header">
         <span>My Personal Stay</span>
         <a href="#" class="logout-btn">로그아웃</a>
     </div>
     
+    <!-- ✅ 메인 콘텐츠 영역 -->
     <div class="container">
         <div class="content">
-            <!-- 사용자 정보 (왼쪽) -->
+            
+            <!-- ✅ 왼쪽: 사용자 프로필 정보 -->
             <div class="left">
-                <!-- 프로필 -->
-                <div class="profile-img" id="profile-img"></div>
-                <div class="profile-info" id="profile-info"></div>
-                <!-- 찜한 목록 & 사용한 목록 -->
+                <div class="profile-img" id="profile-img"></div> <!-- 프로필 이미지 -->
+                <div class="profile-info" id="profile-info"></div> <!-- 사용자 정보 -->
+                
+                <!-- ✅ 찜한 목록 & 사용한 목록 -->
                 <div class="wishlist-usedlist">
                     <div class="list-wrapper">
                         <div class="list-section">
                             <div class="list-title">찜 목록</div>
-                            <div class="list-column" id="liked-list"></div>
+                            <div class="list-column" id="liked-list"></div> <!-- 찜한 목록 -->
                         </div>
                         <div class="list-section">
                             <div class="list-title">사용 목록</div>
-                            <div class="list-column" id="used-list"></div>
+                            <div class="list-column" id="used-list"></div> <!-- 이용한 목록 -->
                         </div>
                     </div>
                 </div>
             </div>
     
-            <!-- 전체 게스트하우스 리스트 (오른쪽) -->
+            <!-- ✅ 오른쪽: 전체 게스트하우스 리스트 -->
             <div class="right">
-                <div class="list-container" id="list"></div>
+                <div class="list-container" id="list"></div> <!-- 게스트하우스 목록 -->
             </div>
         </div>
     </div>
     
     <!-- ✅ JavaScript 파일 로드 -->
-    <script src="assets/js/index_script.js"></script>
-    <script src="assets/js/scripts.js"></script>
+    <script src="assets/js/index_script.js"></script>  <!-- 페이지 데이터 로드 -->
+    <script src="assets/js/scripts.js"></script>  <!-- 공통 API 요청 함수 -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>
