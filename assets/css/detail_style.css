@@ -1,6 +1,6 @@
 :root {
-    --gradient-start: #bdaeff;
-    --gradient-end: #e2d3ff;
+    --gradient-start: #c4b7ff;
+    --gradient-end: #f0e8ff;
     --button-color: white;
     --accent-color-1: #6c47ff;
     --accent-color-2: #a180ff;
@@ -67,6 +67,7 @@ body {
     display: flex;
     flex-direction: column;
     padding: 20px;
+    background-color: white;
 }
 
 .detail-grid {
@@ -102,21 +103,25 @@ body {
     object-fit: cover;
     border-radius: 15px;
     margin-bottom: 15px;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+    box-shadow: 0 5px 5px rgba(0,0,0,0.6);
 }
 
 .bookmark-btn {
-    border: 1rm;
-    border-color: #000;
-    /* position: absolute; */
-    top: 15px;
-    right: 15px;
-    background: none;
-    border: none;
-    color: rgb(246, 246, 246);
-    font-size: 1.5rem;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    background-color: rgba(255, 255, 255, 0.7);
+    border-color:black;
+    border-style: dashed;
+    border-width: 1px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     cursor: pointer;
-    transition: transform 0.2s ease;
+    transition: background-color 0.3s ease;
 }
 
 .bookmark-btn:hover {
@@ -143,6 +148,7 @@ body {
     padding: 15px;
     max-height: 120px;
     overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .mbti-score-bar {
@@ -254,6 +260,7 @@ body {
     border-radius: 6px;
     margin-top: 10px;
     transition: background-color 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .btn-custom:hover {
@@ -295,6 +302,7 @@ body {
     text-align: center;
     transition: all 0.3s ease;
     border: 2px solid transparent;
+    margin-top: 15px;
 }
 
 .profile-card:hover {
@@ -373,7 +381,12 @@ body {
     opacity: 0.6;
 }
 
+.profiles-blurred * {
+    pointer-events: none; /* 자식 요소들의 이벤트도 모두 차단 */
+}
+
 .profiles-blurred .profile-container::before {
+    pointer-events: none;
     content: '신청 후 프로필을 확인할 수 있습니다';
     position: absolute;
     top: 50%;
