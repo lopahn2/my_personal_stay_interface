@@ -2,31 +2,89 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>MBTI 게스트하우스 - 상세 페이지</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게스트하우스 디테일</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://hangeul.pstatic.net/hangeul_static/webfont/NanumSquareNeo.css" rel="stylesheet">
+    <!-- detail css -->
+    <link href="assets/css/detail_style.css" rel="stylesheet">
+    <style>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="assets/css/styles.css" rel="stylesheet">
+    </style>
 </head>
-<body>
 
-    <!-- ✅ 네비게이션 바 -->
-    <nav class="navbar navbar-light bg-light">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="index.html">MBTI 게스트하우스</a>
-            <a class="nav-link" href="login.html">로그아웃</a>
+<body class="full-height">
+    <div class="header">
+        <div class="logo-container">
+            <img src="./src/data/로고.png" alt="베네사진 로고" class="logo">
+            <span class="logo-text">My Personal Stay</span>
         </div>
-    </nav>
+        <a href="#" class="logout-btn">로그아웃</a>
+    </div>
+        <div class="main-container">
+            <div class="detail-grid">
+                <div class="left-panel">
+                    
+                    <img src="http://the-plus.net/wp-content/uploads/2019/05/001.jpg" alt="게스트하우스 이미지" class="left-panel-image">
+                    <button class="bookmark-btn" onclick="toggleBookmark(this)">
+                        ♥
+                    </button>
+                    <div>
+                        <div class="mbti-score-container">
+                            <div class="mbti-compatibility-label">
+                                <span>MBTI 점수</span>
+                                <span id="mbtiScoreText">25%</span>
+                            </div>
+                            <div class="mbti-score-bar">
+                                <div id="mbtiScoreBarFill" class="mbti-score-bar-fill"></div>
+                            </div>
+                            <div class="mbti-compatibility-hint">
+                                👀 ESFJ와 이 숙소와의 매칭 점수는 25점!
+                            </div>
+                        </div>
+                    </div>
+                    <div class="action-buttons">
+                        <button class="btn-custom" onclick="applyToGuesthouse()">신청하기</button>
+                        <button class="btn-custom" onclick="withdrawToGuesthouse()">취소하기</button>
+                    </div>
+                </div> 
 
-    <!-- ✅ 상세 페이지 내용 -->
-    <div class="container mt-5">
-        <h3>게스트하우스 상세 정보</h3>
-        <p>위치, 숙박 가능 인원, 사장님 소개...</p>
+            <div class="right-panel">
+                <div>
+                    <div class="tag-list">
+                        <span class="tag">조용한</span>
+                        <span class="tag">친절한</span>
+                        <span class="tag">깔끔한</span>
+                        <span class="tag">편안한</span>
+                        <span class="tag">아늑한</span>
+                    </div>
+                    
+                    <h3 class="mb-3">평화로운 게스트하우스</h3>
+                    <p class="text-muted mb-4">자연과 함께하는 편안한 휴식처, 당신만의 특별한 공간을 만나보세요.</p>
 
-        <!-- 목록 페이지로 돌아가는 버튼 -->
-        <button class="btn btn-primary" onclick="navigateTo('list.html')">목록으로 돌아가기</button>
+                    <div class="mb-4">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>현재 신청 인원</span>
+                            <span id="currentApplicants">3/10</span>
+                        </div>
+                        <div class="progress">
+                            <div id="applicantsProgressBar" class="progress-bar" role="progressbar" style="width: 30%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="profileSection" class="profiles-blurred">
+                    <h5 class="mb-4" style="color: var(--gradient-start);">같이 지낼 사람들</h5>
+                    <div class="profile-container" id="profileContainer">
+                        <!-- Profiles will be dynamically added here -->
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <script src="assets/js/scripts.js"></script>
+    <!-- detail script  -->
+    <script src="assets/js/detail_script.js"></script>
+ 
 </body>
 </html>
