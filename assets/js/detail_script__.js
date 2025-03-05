@@ -33,7 +33,7 @@ const getGuesthouseIdFromQuery = () => {
  */
 const fetchGuesthouseDetail = async (guesthouseId) => {
     const token = localStorage.getItem("token");
-    const url = `http://localhost:9000/guesthouse/2`; // ✅ API 주소 설정
+    const url = `http://localhost:9000/guesthouse/${guesthouseId}`; // ✅ API 주소 설정
 
     const response = await fetch(url, {
         method: "GET",
@@ -179,7 +179,8 @@ const applyToGuesthouse = async () => {
 
         console.log("3");
         alert("신청이 완료되었습니다!");
-        window.location.reload(); // ✅ 신청 후 페이지 새로고침
+        // window.location.reload(); // ✅ 신청 후 페이지 새로고침
+        document.getElementById('profileSection').classList.remove('profiles-blurred');
 
     } catch (error) {
         console.error("신청 오류:", error);
