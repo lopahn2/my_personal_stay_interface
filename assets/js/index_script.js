@@ -51,26 +51,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     </div>
                 `;
         cardContainer.innerHTML += cardHTML;
-        // const div = document.createElement("div");
-        // div.className = "list-item" + (item.recommended ? " recommended" : " general");
-
-        // const starSpan = document.createElement("span");
-        // starSpan.className = "star";
-        // starSpan.textContent = item.recommended ? "★" : "";
-
-        // const nameLink = document.createElement("a");
-        // nameLink.className = "name-link";
-        // nameLink.textContent = item.name;
-        // nameLink.href = item.link;
-
-        // const scoreSpan = document.createElement("span");
-        // scoreSpan.className = "score-circle";
-        // scoreSpan.textContent = item.score;
-
-        // div.appendChild(starSpan);
-        // div.appendChild(nameLink);
-        // div.appendChild(scoreSpan);
-        // listElement.appendChild(div);
     });
 
     // ✅ 3. 찜한 게스트하우스 목록
