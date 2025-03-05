@@ -10,6 +10,7 @@
     
     <!-- ✅ 프로젝트 전용 CSS -->
     <link href="assets/css/index_style.css" rel="stylesheet">
+    <link href="https://hangeul.pstatic.net/hangeul_static/webfont/NanumSquareNeo.css" rel="stylesheet">
 </head>
 <body>
 
@@ -21,7 +22,10 @@
 
     <!-- ✅ 헤더 영역 (사이트 제목 + 로그아웃 버튼) -->
     <div class="header">
-        <span>My Personal Stay</span>
+        <div class="logo-container">
+            <img src="./src/data/로고.png" alt="베네사진 로고" class="logo">
+            <span class="logo-text">My Personal Stay</span>
+        </div>
         <a href="#" class="logout-btn">로그아웃</a>
     </div>
     
@@ -51,6 +55,7 @@
     
             <!-- ✅ 오른쪽: 전체 게스트하우스 리스트 -->
             <div class="right">
+                <h3 style="padding-bottom: 10px;">✈ Find My Guesthouse</h3>
                 <div class="list-container" id="list"></div> <!-- 게스트하우스 목록 -->
             </div>
         </div>
