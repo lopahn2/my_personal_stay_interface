@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POST Request</title>
+</head>
+<body>
+    <script>
+        const url = 'http://localhost:9000/scores/init';
+        const data = {
+        mbti: 'ESFJ',
+        guestHouseId: '7'
+        };
+
+        fetch(url, {
+        method: 'POST', // 요청 메서드
+        headers: {
+            'Content-Type': 'application/json', // JSON 형식으로 데이터 전송
+            'Access-Control-Allow-Origin': '*' // 모든 도메인에 대해 CORS 허용
+        },
+        body: JSON.stringify(data), // JSON으로 데이터를 전송
+        mode: 'cors' // CORS 요청 모드 설정
+        })
+        .then(response => response.json()) // 응답을 JSON 형식으로 변환
+        .then(data => console.log('성공:', data)) // 성공적인 응답 처리
+        .catch((error) => console.error('실패:', error)); // 오류 처리
+
+    </script>
+</body>
+</html>
