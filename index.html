@@ -63,6 +63,76 @@
             </div>
         </div>
     </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const leftPanel = document.querySelector(".left");
+            const profileImg = document.getElementById("profile-img");
+            const profileInfo = document.getElementById("profile-info");
+            const cardContainer = document.getElementById("card-container");
+
+            let flag = false;
+
+            window.addEventListener("scroll", function () {
+                if (window.scrollY > 800 ) {
+                    if(!flag) {
+                        leftPanel.style.opacity = '1';
+                        leftPanel.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+                        leftPanel.style.transform = 'translateX(0)'; // 처음 위치로 설정
+
+                        cardContainer.style.transition = 'transform 0.8s ease';
+                        // 애니메이션 시작
+                        leftPanel.style.opacity = '0';
+                        leftPanel.style.transform = 'translateY(200%)'; // 아래쪽으로 사라지게 이동
+                        setTimeout(() => {
+                            // 처음에 왼쪽으로 이동
+                            cardContainer.style.transform = 'translateX(-60%)';
+                        }, 200)
+
+                        setTimeout(function() {
+                                cardContainer.style.transform = 'translateX(0)';
+                                cardContainer.style.columnCount = 4;
+                                leftPanel.style.display='none';
+                            }, 800); // 0.8초 뒤에 원래 위치로 돌아옴
+
+                        flag = true;
+                    }
+                } else {
+                    if(flag) {
+                       // 스크롤 위치가 800 이하일 때 반대 동작
+                       
+
+                        cardContainer.style.transition = 'transform 0.8s ease';
+                        // 애니메이션 시작
+                        
+                        
+                        setTimeout(() => {
+                            // 처음에 왼쪽으로 이동
+                            leftPanel.style.display = 'block';
+                            cardContainer.style.transform = 'translateX(-40%)';
+                        }, 200)
+
+                        setTimeout(function() {
+                            
+                            cardContainer.style.transform = 'translateX(0)';
+                            cardContainer.style.columnCount = 3;
+                            setTimeout(() => {
+                                leftPanel.style.opacity = '0';
+                                leftPanel.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+                                leftPanel.style.transform = 'translateY(200%)'; // 아래로 이동
+                                leftPanel.style.opacity = '1';
+                                leftPanel.style.transform = 'translateY(0)'; // 원래 위치로 돌아옴 
+                            }, 100);
+                            
+                                
+                            }, 800); // 0.8초 뒤에 원래 위치로 돌아옴
+                        flag = false;
+                    }
+                    
+                }
+            });
+        });
+    </script>
+    
     
     <!-- ✅ JavaScript 파일 로드 -->
     <script src="assets/js/index_script.js"></script>  <!-- 페이지 데이터 로드 -->
