@@ -104,6 +104,12 @@ document.addEventListener("DOMContentLoaded", function () {
     fetch('http://localhost:9000/guesthouse')
         .then(response => response.json())
         .then(data => {
+            // 로그인한 사용자의 MBTI에 따른 점수를 기준으로 내림차순 정렬
+            data.sort((a, b) => {
+                const scoreA = a.scores && a.scores.find(scoreObj => scoreObj.mbti === profileData.mbti)?.totalScore || 0;
+                const scoreB = b.scores && b.scores.find(scoreObj => scoreObj.mbti === profileData.mbti)?.totalScore || 0;
+                return scoreB - scoreA;
+            });
             const cardContainer = document.getElementById("card-container");
             data.forEach(item => {
                 // item은 GuestHouseRes 객체이며, item.scores는 ScoreRes 배열입니다.
