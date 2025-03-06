@@ -34,7 +34,10 @@ function applyToGuesthouse() {
         hasApplied = true;
         document.getElementById('profileSection').classList.remove('profiles-blurred');
         
-        alert('게스트하우스에 신청되었습니다.');
+        Swal.fire({
+            title: '신청이 완료되었습니다.',
+            icon: 'success',
+        });
     }
 }
 
@@ -43,7 +46,10 @@ function withdrawToGuesthouse() {
         hasApplied = false;
         document.getElementById('profileSection').classList.add('profiles-blurred');
         
-        alert('신청 취소 완료되었습니다.');
+        Swal.fire({
+            title: '신청이 취소되었습니다.',
+            icon: 'success',
+        });
     }
 }
 
@@ -141,8 +147,12 @@ document.addEventListener('DOMContentLoaded', () => {
 document.querySelector(".logout-btn").addEventListener("click", function (event) {
     event.preventDefault();
     localStorage.removeItem("token");
-    alert("로그아웃되었습니다.");
-    window.location.href = "login.html";
+    Swal.fire({
+        title: '로그아웃되었습니다.',
+        icon: 'success',
+    }).then(function(){
+        location.href="login.html";                   
+    });
 });
 
 const logo =  document.querySelector(".logo");

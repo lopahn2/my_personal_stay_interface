@@ -5,8 +5,13 @@ document.addEventListener("DOMContentLoaded", function () {
     const token = localStorage.getItem("token");
     // 로그인 토큰 확인: 토큰이 없으면 경고창을 띄우고 로그인 페이지로 이동
     if (!token) {
-        alert("로그인이 되어 있지 않습니다. 로그인 페이지로 이동합니다.");
-        window.location.href = "login.html";
+        Swal.fire({
+            title: '로그인 상태가 아닙니다.',
+            text: '로그인 페이지로 이동합니다.',
+            icon: 'warning',
+        }).then(function(){
+            location.href="login.html";                   
+        });
         return; // 이후 코드 실행 중단
     }
 
@@ -42,6 +47,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 guesthouse: decoded.guesthouse || defaultProfileData.guesthouse// 신청 내역은 추가 필요
             
             };
+
+            console.log(profileData);
         } else {
             profileData = defaultProfileData;
         }
@@ -97,7 +104,14 @@ document.addEventListener("DOMContentLoaded", function () {
     fetch('http://localhost:9000/guesthouse')
         .then(response => response.json())
         .then(data => {
+            // 로그인한 사용자의 MBTI에 따른 점수를 기준으로 내림차순 정렬
+            data.sort((a, b) => {
+                const scoreA = a.scores && a.scores.find(scoreObj => scoreObj.mbti === profileData.mbti)?.totalScore || 0;
+                const scoreB = b.scores && b.scores.find(scoreObj => scoreObj.mbti === profileData.mbti)?.totalScore || 0;
+                return scoreB - scoreA;
+            });
             const cardContainer = document.getElementById("card-container");
+            
             data.forEach(item => {
                 // item은 GuestHouseRes 객체이며, item.scores는 ScoreRes 배열입니다.
                 // 로그인한 사용자의 MBTI와 일치하는 score를 찾아 totalScore를 표시합니다.
@@ -107,8 +121,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 // 카드 UI 생성
                 const cardHTML = `
-                    <div class="col-sm-6 col-md-4">
-                        <div class="card" style="width: 18rem;">
+                    <div>
+                        <div class="card">
                             <img src="${item.bgImgUrl}" class="card-img-top" alt="${item.name}">
                             <div class="card-body">
                                 <h5 class="card-title">${item.name}</h5>
@@ -118,8 +132,11 @@ document.addEventListener("DOMContentLoaded", function () {
                         </div>
                     </div>
                 `;
+
                 cardContainer.innerHTML += cardHTML;
             });
+
+
         })
         .catch(error => console.error("Error fetching guesthouse list:", error));
 
@@ -250,8 +267,12 @@ document.addEventListener("DOMContentLoaded", function () {
     document.querySelector(".logout-btn").addEventListener("click", function (event) {
         event.preventDefault();
         localStorage.removeItem("token");
-        alert("로그아웃되었습니다.");
-        window.location.href = "login.html";
+        Swal.fire({
+            title: '로그아웃되었습니다.',
+            icon: 'success',
+        }).then(function(){
+            location.href="login.html";                   
+        });
     });
     // JWT 토큰 디코딩 함수
     function parseJwt(token) {

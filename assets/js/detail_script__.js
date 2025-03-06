@@ -30,12 +30,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         updateGuesthouseUI(guesthouseData); // ✅ UI 업데이트
         const profileList = await fetchProfiles(guesthouseId); // ✅ 함께 지낼 사람 목록 불러오기
         createProfileCards(profileList); // ✅ 프로필 UI 업데이트
-        /**
-         * TODO
-         * 게스트하우스 페이지 열리는 순간에 신청 된 게스트하우스일 경우 미리 블러 해제 처리
-         * 좋아요 버튼 기능 구현
-         * 
-         */
+        // ✅ 사용자가 '좋아요'를 눌렀는지 확인 후 UI 반영
+        await checkIfLiked(guesthouseId, memberId);
+        // ✅ 사용자가 게스트하우스를 신청했는지 확인 후 UI 반영
+        await checkIfBooked(guesthouseId, memberId);
     } catch (error) {
         console.error("데이터 로드 오류:", error);
         alert("게스트하우스 정보를 불러오는 중 문제가 발생했습니다.");
@@ -173,18 +171,28 @@ const createProfileCards = (profileList) => {
  * ✅ 신청하기 API 요청
  */
 const applyToGuesthouse = async () => {
-    const url = `http://localhost:9000/status/book`; // ✅ API URL (수정 가능)
-    
+    const guesthouseId = getGuesthouseIdFromQuery();
     const token = localStorage.getItem("token");
     const memberId = parseJwt(token).memberId;
+
+    // ✅ 이미 신청한 경우 확인
+    const bookedGuesthouses = await fetchUserBooks(memberId);
+    const alreadyBooked = bookedGuesthouses.some(guesthouse => guesthouse.guestHouseId === guesthouseId);
+    
+    if (alreadyBooked) {
+        alert("이미 신청한 게스트하우스입니다.");
+        return; // ✅ 신청 중단
+    }
+
+    const url = `http://localhost:9000/status/book`; // ✅ API URL
     const requestBody = {
-        memberId: memberId, // ✅ 현재 로그인한 사용자 ID (localStorage에서 가져옴)
-        guestHouseId: getGuesthouseIdFromQuery(),
-        bookReqDto: { flag: true }, // ✅ 신청 (bookReqDto.flag = true)
+        memberId: memberId,
+        guestHouseId: guesthouseId,
+        bookReqDto: { flag: true },
         likeReqDto: { flag: false },
         usedReqDto: { flag: false }
     };
-    console.log(requestBody);
+
     try {
         const response = await fetch(url, {
             method: "POST",
@@ -194,8 +202,11 @@ const applyToGuesthouse = async () => {
             },
             body: JSON.stringify(requestBody)
         });
+
         if (!response.ok) throw new Error("게스트하우스 신청에 실패했습니다.");
         alert("신청이 완료되었습니다!");
+
+        // ✅ 신청 성공 후 블러 해제
         document.getElementById('profileSection').classList.remove('profiles-blurred');
 
     } catch (error) {
@@ -207,37 +218,54 @@ const applyToGuesthouse = async () => {
 /**
  * ✅ 신청 취소하기 API 요청
  */
-const withdrawToGuesthouse = async (jwt) => {
-    const url = `http://localhost:9000/status/book`; // ✅ API URL (수정 가능)
-    
+const withdrawToGuesthouse = async () => {
+    const guesthouseId = getGuesthouseIdFromQuery();
     const token = localStorage.getItem("token");
     const memberId = parseJwt(token).memberId;
+
+    // ✅ 신청 여부 확인
+    const bookedGuesthouses = await fetchUserBooks(memberId);
+    const isBooked = bookedGuesthouses.some(guesthouse => guesthouse.guestHouseId === guesthouseId);
+    console.log(bookedGuesthouses);
+    console.log(guesthouseId);
+    console.log(isBooked);
+    if (!isBooked) {
+        alert("취소할 수 없습니다.");
+        return; // ✅ 취소 중단
+    }
+
+    const url = `http://localhost:9000/status/book`; // ✅ API URL
     const requestBody = {
-        memberId: memberId, // ✅ 현재 로그인한 사용자 ID (localStorage에서 가져옴)
-        guestHouseId: getGuesthouseIdFromQuery(),
-        bookReqDto: { flag: false }, // ✅ 신청 (bookReqDto.flag = true)
+        memberId: memberId,
+        guestHouseId: guesthouseId,
+        bookReqDto: { flag: false },
         likeReqDto: { flag: false },
         usedReqDto: { flag: false }
     };
-    console.log(requestBody);
+
     try {
         const response = await fetch(url, {
             method: "POST",
             headers: {
                 "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
             },
             body: JSON.stringify(requestBody)
         });
+        console.log(response);
+
         if (!response.ok) throw new Error("게스트하우스 신청 취소에 실패했습니다.");
         alert("취소가 완료되었습니다!");
+
+        // ✅ 취소 성공 후 블러 처리
         document.getElementById('profileSection').classList.add('profiles-blurred');
 
     } catch (error) {
-        console.error("신청 오류:", error);
-        alert("신청 중 문제가 발생했습니다.");
+        console.error("취소 오류:", error);
+        alert("취소 중 문제가 발생했습니다.");
     }
 };
+
 
 /**
  * ✅ JWT에서 `memberId` 추출하는 함수
@@ -305,3 +333,83 @@ fadeInElements.forEach((selector, index) => {
         }, 200 * (index + 1)); // Staggered delay
     }
 });
+
+/**
+ * ✅ API 요청: 사용자의 '좋아요'한 게스트하우스 목록 가져오기
+ */
+const fetchUserLikes = async (memberId) => {
+    const token = localStorage.getItem("token");
+    const url = `http://localhost:9000/status/like/${memberId}`; // ✅ API 주소
+
+    try {
+        const response = await fetch(url, {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
+            }
+        });
+
+        if (!response.ok) throw new Error("좋아요 목록을 가져오는 데 실패했습니다.");
+        return response.json();
+    } catch (error) {
+        console.error("좋아요 목록 불러오기 오류:", error);
+        return [];
+    }
+};
+
+/**
+ * ✅ 사용자가 해당 게스트하우스를 '좋아요' 했는지 확인 후 UI 업데이트
+ */
+const checkIfLiked = async (guesthouseId, memberId) => {
+    const likedGuesthouses = await fetchUserLikes(memberId); // ✅ 사용자의 좋아요 목록 가져오기
+    // ✅ 좋아요 목록에 현재 게스트하우스가 포함되어 있는지 확인
+    const isLiked = likedGuesthouses.some(guesthouse => guesthouse.guestHouseId === guesthouseId);
+
+    // ✅ 찜 버튼 활성화
+    const bookmarkBtn = document.querySelector(".bookmark-btn");
+    if (isLiked) {
+        bookmarkBtn.classList.add('active');
+    }
+};
+
+/**
+ * ✅ API 요청: 사용자의 '신청'한 게스트하우스 목록 가져오기
+ */
+const fetchUserBooks = async (memberId) => {
+    const token = localStorage.getItem("token");
+    const url = `http://localhost:9000/status/booked/${memberId}`; // ✅ API 주소
+
+    try {
+        const response = await fetch(url, {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
+            }
+        });
+
+        if (!response.ok) throw new Error("좋아요 목록을 가져오는 데 실패했습니다.");
+        return response.json();
+    } catch (error) {
+        console.error("좋아요 목록 불러오기 오류:", error);
+        return [];
+    }
+};
+
+/**
+ * ✅ 사용자가 해당 게스트하우스를 '신청' 했는지 확인 후 UI 업데이트
+ */
+const checkIfBooked = async (guesthouseId, memberId) => {
+    const BookedGuesthouses = await fetchUserBooks(memberId); // ✅ 사용자의 신청 목록 가져오기
+    console.log(BookedGuesthouses);
+    console.log(guesthouseId);
+    // ✅ 신청 목록에 현재 게스트하우스가 포함되어 있는지 확인
+    const isBooked = BookedGuesthouses.some(guesthouse => guesthouse.guestHouseId === guesthouseId);
+
+    // ✅ 블러 처리 해제
+    if (isBooked) {
+        document.getElementById('profileSection').classList.remove('profiles-blurred');
+    }
+};
+
