@@ -121,12 +121,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 // 카드 UI 생성
                 const cardHTML = `
                     <div>
-                        <div class="card">
+                        <div class="card" onclick="location.href='detail.html?id=${item.guestHouseId}';">
                             <img src="${item.bgImgUrl}" class="card-img-top" alt="${item.name}">
                             <div class="card-body">
                                 <h5 class="card-title">${item.name}</h5>
                                 <p class="card-text">${scoreDisplay}점, ${item.location}</p>
-                                <a href="detail.html?id=${item.guestHouseId}" class="btn btn-detail">상세보기</a>
                             </div>
                         </div>
                     </div>
