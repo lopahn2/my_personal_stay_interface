@@ -1,4 +1,4 @@
-//추가 필요: 1.기본 프로필 데이터에서 guesthouse 사용목록 추가 2. detail.html과 연결 3. guesthouse의 점수 잘 나오는지 test
+//추가 필요: 1.기본 프로필 데이터에서 guesthouse 사용목록 추가 2. detail.html과 연결
 
 document.addEventListener("DOMContentLoaded", function () {
     // ✅ 1. 사용자 정보 데이터 (추후 서버에서 가져와야 함)
@@ -117,6 +117,27 @@ document.addEventListener("DOMContentLoaded", function () {
     //                 </div>
     //             `;
     //     cardContainer.innerHTML += cardHTML;
+
+    //     // const div = document.createElement("div");
+    //     // div.className = "list-item" + (item.recommended ? " recommended" : " general");
+
+    //     // const starSpan = document.createElement("span");
+    //     // starSpan.className = "star";
+    //     // starSpan.textContent = item.recommended ? "★" : "";
+
+    //     // const nameLink = document.createElement("a");
+    //     // nameLink.className = "name-link";
+    //     // nameLink.textContent = item.name;
+    //     // nameLink.href = item.link;
+
+    //     // const scoreSpan = document.createElement("span");
+    //     // scoreSpan.className = "score-circle";
+    //     // scoreSpan.textContent = item.score;
+
+    //     // div.appendChild(starSpan);
+    //     // div.appendChild(nameLink);
+    //     // div.appendChild(scoreSpan);
+    //     // listElement.appendChild(div);
     // });
 
     // ✅ 3. 찜한 게스트하우스 목록
