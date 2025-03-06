@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const guesthouseData = await fetchGuesthouseDetail(guesthouseId); // ✅ API 요청
         updateGuesthouseUI(guesthouseData); // ✅ UI 업데이트
         const profileList = await fetchProfiles(guesthouseId); // ✅ 함께 지낼 사람 목록 불러오기
-        createProfileCards(profileList); // ✅ 프로필 UI 업데이트
+        createProfileCards(profileList, guesthouseData.capacity); // ✅ 프로필 UI 및 신청자 수 업데이트
         // ✅ 사용자가 '좋아요'를 눌렀는지 확인 후 UI 반영
         await checkIfLiked(guesthouseId, memberId);
         // ✅ 사용자가 게스트하우스를 신청했는지 확인 후 UI 반영
@@ -122,6 +122,10 @@ const updateGuesthouseUI = (guesthouseData) => {
 
     // ✅ MBTI 점수 업데이트
     updateMbtiScore(guesthouseData.mbtiScore);
+    const token = localStorage.getItem("token");
+    const userMbti = parseJwt(token).mbti || "ENTP";
+    document.querySelector(".mbti-compatibility-hint").textContent =
+        `👀 ${userMbti}와 이 숙소와의 매칭 점수는 ${guesthouseData.mbtiScore}점!`;
 };
 
 /**
@@ -139,11 +143,14 @@ const updateMbtiScore = (score) => {
 };
 
 /**
- * ✅ UI 업데이트: 같이 지낼 사람들 프로필 카드 생성
+ * ✅ UI 업데이트: 같이 지낼 사람들 프로필 카드 생성 및 신청자 수 업데이트
  */
-const createProfileCards = (profileList) => {
+const createProfileCards = (profileList, capacity) => {
     const profileContainer = document.getElementById('profileContainer');
     profileContainer.innerHTML = '';
+
+    // 신청자 수 업데이트: (신청 인원 / 전체 인원)
+    document.getElementById('applicantCountText').textContent = `${profileList.length}/${capacity}`;
 
     profileList.forEach(profile => {
         const card = document.createElement('div');
