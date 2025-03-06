@@ -1,3 +1,30 @@
+:root {
+    --gradient-start: #af9bff;
+    --gradient-end: #f3ecff;
+    --button-color: white;
+    --accent-color-1: #6c47ff;
+    --accent-color-2: #a180ff;
+    --accent-color-3: #e0d6ff;
+    --accent-color-4: #ff0000;
+    --text-color: #4a4a4a;
+    --light-background: #f8f5ff;
+
+    --gradient-colors-1: linear-gradient(
+        135deg, 
+        #c691ff 0%, 
+        #88b4ff 25%, 
+        #ffb3d4 50%, 
+        #ffe4e0 75%, 
+        #e1c6ff 100%
+    );
+    --gradient-colors-2: linear-gradient(
+        to right top, 
+        #f3ecff 0%, 
+        #88b4ff 75%, 
+        #e1c6ff 100%
+    );     
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -17,7 +44,6 @@ body {
 .header {
     width: 100%;
     height: 60px;
-    background: #bdaeff;
     color: white;
     display: flex;
     justify-content: space-between;
@@ -30,6 +56,7 @@ body {
     font-size: 18px;
     font-weight: bold;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    background: var(--gradient-colors-1);
 }
 
 .logo-container {
