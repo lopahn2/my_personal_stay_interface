@@ -30,12 +30,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         updateGuesthouseUI(guesthouseData); // ✅ UI 업데이트
         const profileList = await fetchProfiles(guesthouseId); // ✅ 함께 지낼 사람 목록 불러오기
         createProfileCards(profileList); // ✅ 프로필 UI 업데이트
-        /**
-         * TODO
-         * 게스트하우스 페이지 열리는 순간에 신청 된 게스트하우스일 경우 미리 블러 해제 처리
-         * 좋아요 버튼 기능 구현
-         * 
-         */
+        // ✅ 사용자가 '좋아요'를 눌렀는지 확인 후 UI 반영
+        await checkIfLiked(guesthouseId, memberId);
+        // ✅ 사용자가 게스트하우스를 신청했는지 확인 후 UI 반영
+        await checkIfBooked(guesthouseId, memberId);
     } catch (error) {
         console.error("데이터 로드 오류:", error);
         alert("게스트하우스 정보를 불러오는 중 문제가 발생했습니다.");
@@ -305,3 +303,83 @@ fadeInElements.forEach((selector, index) => {
         }, 200 * (index + 1)); // Staggered delay
     }
 });
+
+/**
+ * ✅ API 요청: 사용자의 '좋아요'한 게스트하우스 목록 가져오기
+ */
+const fetchUserLikes = async (memberId) => {
+    const token = localStorage.getItem("token");
+    const url = `http://localhost:9000/status/like/${memberId}`; // ✅ API 주소
+
+    try {
+        const response = await fetch(url, {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
+            }
+        });
+
+        if (!response.ok) throw new Error("좋아요 목록을 가져오는 데 실패했습니다.");
+        return response.json();
+    } catch (error) {
+        console.error("좋아요 목록 불러오기 오류:", error);
+        return [];
+    }
+};
+
+/**
+ * ✅ 사용자가 해당 게스트하우스를 '좋아요' 했는지 확인 후 UI 업데이트
+ */
+const checkIfLiked = async (guesthouseId, memberId) => {
+    const likedGuesthouses = await fetchUserLikes(memberId); // ✅ 사용자의 좋아요 목록 가져오기
+    // ✅ 좋아요 목록에 현재 게스트하우스가 포함되어 있는지 확인
+    const isLiked = likedGuesthouses.some(guesthouse => guesthouse.guestHouseId === guesthouseId);
+
+    // ✅ 찜 버튼 활성화
+    const bookmarkBtn = document.querySelector(".bookmark-btn");
+    if (isLiked) {
+        bookmarkBtn.classList.add('active');
+    }
+};
+
+/**
+ * ✅ API 요청: 사용자의 '신청'한 게스트하우스 목록 가져오기
+ */
+const fetchUserBooks = async (memberId) => {
+    const token = localStorage.getItem("token");
+    const url = `http://localhost:9000/status/booked/${memberId}`; // ✅ API 주소
+
+    try {
+        const response = await fetch(url, {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
+            }
+        });
+
+        if (!response.ok) throw new Error("좋아요 목록을 가져오는 데 실패했습니다.");
+        return response.json();
+    } catch (error) {
+        console.error("좋아요 목록 불러오기 오류:", error);
+        return [];
+    }
+};
+
+/**
+ * ✅ 사용자가 해당 게스트하우스를 '신청' 했는지 확인 후 UI 업데이트
+ */
+const checkIfBooked = async (guesthouseId, memberId) => {
+    const BookedGuesthouses = await fetchUserBooks(memberId); // ✅ 사용자의 신청 목록 가져오기
+    console.log(BookedGuesthouses);
+    console.log(guesthouseId);
+    // ✅ 신청 목록에 현재 게스트하우스가 포함되어 있는지 확인
+    const isBooked = BookedGuesthouses.some(guesthouse => guesthouse.guestHouseId === guesthouseId);
+
+    // ✅ 블러 처리 해제
+    if (isBooked) {
+        document.getElementById('profileSection').classList.remove('profiles-blurred');
+    }
+};
+
