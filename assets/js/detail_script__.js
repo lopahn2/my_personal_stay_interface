@@ -557,7 +557,14 @@ const checkIfBooked = async (guesthouseId, memberId) => {
 
 async function fetchMemberInfo(memberId) {
     try {
-        const response = await fetch(`http://127.0.0.1:9000/member/${memberId}`);
+        const response = await fetch(`http://127.0.0.1:9000/member/${memberId}`,{
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                'Access-Control-Allow-Origin': '*', // 모든 도메인에 대해 CORS 허용
+                mode: 'cors', // CORS 요청 모드 설정
+            }
+        });
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
