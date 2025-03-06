@@ -8,7 +8,7 @@ function toggleBookmark(btn) {
 const fadeInElements = [
     '.left-panel',
     '.right-panel',
-
+    '.header',
     '.mbti-score-container',
     '.action-buttons',
     '.profile-container'
