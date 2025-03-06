@@ -20,43 +20,47 @@
     --gradient-colors-2: linear-gradient(
         to right top, 
         #f3ecff 0%, 
-        #88b4ff 75%, 
+        #88b4ff 50%, 
+        hsl(335, 100%, 88%) 75%, 
         #e1c6ff 100%
     );     
 }
 
-* {
+body {
+    font-family: 'NanumSquareNeo', sans-serif;
+    background: white;
+    line-height: 1.6;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
-    font-family: 'NanumSquareNeo', sans-serif;
+    color: var(--text-color);
 }
 
-body {
-    background-color: #ffffff;
+.full-height {
+    min-height: 100vh;
     display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    padding-top: 70px; /* 헤더 공간 확보 */
+    flex-direction: column;
 }
 
 /* 헤더 스타일 */
 .header {
     width: 100%;
     height: 60px;
+    background: var(--gradient-colors-1);
     color: white;
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 0 20px;
-    position: fixed;
     top: 0;
     left: 0;
     z-index: 1000;
     font-size: 18px;
     font-weight: bold;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    background: var(--gradient-colors-1);
+    background-size: 400% 400%;
+    animation: gradientAnimation 15s ease infinite;
+    position: relative;
+    overflow: hidden;
 }
 
 .logo-container {
@@ -116,6 +120,7 @@ body {
     border-radius: 15px;
     text-align: center;
     box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    height:fit-content
 }
 
 .profile-img {
@@ -148,7 +153,7 @@ body {
 }
 
 .list-section {
-    width: 50%; /* 반반 차지하도록 설정 */
+    width: 50%;
     text-align: center;
 }
 
@@ -158,9 +163,22 @@ body {
 }
 
 .list-column {
-    display: flex;
+    /* display: flex; */
     flex-direction: column;
-    gap: 5px;
+    gap: 20px;
+
+    max-height: 35vh;
+    overflow-y: auto;
+    display: flex;
+    grid-template-columns: 1fr;
+    position: relative;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+
+    background-color:#faf7ff;
+    border-radius: 10px;
+    padding-top: 15px;
+    padding-bottom: 20px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
 }
 
 .list-item-small {
@@ -230,4 +248,35 @@ body {
     .left, .right {
         width: 100%;
     }
+}
+
+@keyframes gradientAnimation {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.header {
+    opacity: 0;
+    transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+/* 스크롤바 */
+.list-column::-webkit-scrollbar {
+    width: 6px;
+}
+
+.list-column::-webkit-scrollbar-track {
+    background: #F3F0FF;
+}
+
+.list-column::-webkit-scrollbar-thumb {
+    background: var(--accent-color-1);
+    border-radius: 3px;
 }
