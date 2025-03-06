@@ -51,15 +51,36 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // ✅ 프로필 이미지 및 정보 표시
     document.getElementById("profile-img").style.backgroundImage = `url(${profileData.img})`;
-    document.getElementById("profile-info").innerHTML = `
-        <h4><strong>${profileData.name}</strong></h4>
-        <p>${profileData.mbti} / ${profileData.age}세 / ${profileData.gender}</p>
-        <p>좋아하는 음식: ${profileData.food}</p>
-        <p>주량: ${profileData.alcohol}</p>
-        <p style="font-style:italic">"${profileData.intro}"</p>
-        <p>현재 신청 내역: ${profileData.guesthouse}</p>
-    `;
-
+    // document.getElementById("profile-info").innerHTML = `
+    //     <h4><strong>${profileData.name}</strong></h4>
+    //     <p>${profileData.mbti} / ${profileData.age}세 / ${profileData.gender}</p>
+    //     <p>좋아하는 음식: ${profileData.food}</p>
+    //     <p>주량: ${profileData.alcohol}</p>
+    //     <p style="font-style:italic">"${profileData.intro}"</p>
+    //     <p>현재 신청 내역: ${profileData.guesthouse}</p>
+    // `;
+    // ✅ 예약중인(신청중인) 게스트하우스 목록을 가져와 프로필의 guesthouse 필드를 업데이트
+    if (profileData.memberId) {
+        fetch(`http://localhost:9000/status/booked/${profileData.memberId}`)
+            .then(response => response.json())
+            .then(bookedData => {
+                // bookedData는 BookedGuestHouseResDto 배열로 가정 (각 객체에 name 필드 존재)
+                const bookedNames = bookedData.map(item => item.name).join(", ") || "없음";
+                profileData.guesthouse = bookedNames;
+                // 프로필 영역 업데이트 (기존 innerHTML을 다시 렌더링)
+                document.getElementById("profile-info").innerHTML = `
+                    <h4><strong>${profileData.name}</strong></h4>
+                    <p>${profileData.mbti} / ${profileData.age}세 / ${profileData.gender}</p>
+                    <p>좋아하는 음식: ${profileData.food}</p>
+                    <p>주량: ${profileData.alcohol}</p>
+                    <p style="font-style:italic">"${profileData.intro}"</p>
+                    <p>현재 신청 내역: ${profileData.guesthouse}</p>
+                `;
+            })
+            .catch(error => console.error("Error fetching booked guesthouse list:", error));
+    } else {
+        console.error("회원 고유번호(memberId)가 토큰에 포함되어 있지 않습니다.");
+    }
     // ✅ 2. 전체 게스트하우스 목록 (추후 서버에서 가져와야 함)
     // const dataList = [
     //     { name: "서울 한옥 게스트하우스", score: 92, location: "서울", detailUrl: "detail.html", imageUrl: "https://image.theminda.com/data/goods/3000/3673/goods/16ed717b7ef90bbdf0922d24a23da20b.jpg" },
@@ -168,8 +189,16 @@ document.addEventListener("DOMContentLoaded", function () {
                     const div = document.createElement("div");
                     div.className = "list-item-small";
                     // 예시로 이름을 표시합니다. 필요에 따라 링크나 추가 정보를 표시 가능
-                    div.textContent = item.name;
+
+                    const img = document.createElement("img");
+                    img.src = item.bgImgUrl;
+
+                    const span = document.createElement("span");
+                    span.textContent = item.name;
+
                     likedlistElement.appendChild(div);
+                    div.appendChild(img);
+                    div.appendChild(span);
                 });
             })
             .catch(error => console.error("Error fetching liked guesthouse list:", error));
@@ -187,8 +216,16 @@ document.addEventListener("DOMContentLoaded", function () {
                     const div = document.createElement("div");
                     div.className = "list-item-small";
                     // 필요에 따라 링크나 추가 정보를 표시할 수 있음
-                    div.textContent = item.name;
+
+                    const img = document.createElement("img");
+                    img.src = item.bgImgUrl;
+
+                    const span = document.createElement("span");
+                    span.textContent = item.name;
+
                     usedlistElement.appendChild(div);
+                    div.appendChild(img);
+                    div.appendChild(span);
                 });
             })
             .catch(error => console.error("Error fetching used guesthouse list:", error));
@@ -227,5 +264,36 @@ document.addEventListener("DOMContentLoaded", function () {
             console.error("Invalid JWT Token", e);
             return null;
         }
+    }
+});
+
+// New fade-in animations
+const fadeInElements = [
+    '.header',
+    '.profile-img',
+    '.profile-info',
+    '.left',
+    '.right',
+
+    '.title',
+    '.wishlist-usedlist',
+
+    '.row',
+    '.card-container',
+    '.card'
+];
+
+// Staggered fade-in animation
+fadeInElements.forEach((selector, index) => {
+    const element = document.querySelector(selector);
+    if (element) {
+        element.style.opacity = '0';
+        element.style.transform = 'translateY(20px)';
+        
+        setTimeout(() => {
+            element.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+            element.style.opacity = '1';
+            element.style.transform = 'translateY(0)';
+        }, 200 * (index + 1)); // Staggered delay
     }
 });
