@@ -205,6 +205,21 @@ const applyToGuesthouse = async () => {
     const memberId = decoded.memberId;
     const mbti = decoded.mbti;
 
+    // ✅ 현재 신청자 목록과 게스트하우스 정보를 가져와 capacity 확인
+    const profileList = await fetchProfiles(guesthouseId);
+    const guesthouseData = await fetchGuesthouseDetail(guesthouseId);
+    
+    // 신청자 수가 게스트하우스 capacity 이상이면 신청 불가 처리
+    if (profileList.length >= guesthouseData.capacity) {
+         Swal.fire({
+             title: '신청 불가',
+             text: '게스트하우스의 정원이 모두 찼습니다.',
+             icon: 'warning'
+         });
+         return;
+    }
+
+
     // ✅ 이미 신청한 경우 확인
     const bookedGuesthouses = await fetchUserBooks(memberId);
     const alreadyBooked = bookedGuesthouses.some(guesthouse => guesthouse.guestHouseId === guesthouseId);
