@@ -19,24 +19,39 @@ document.addEventListener("DOMContentLoaded", async () => {
     const token = localStorage.getItem("token");
     const memberId = parseJwt(token).memberId;
 
+
     if (!guesthouseId) {
-        alert("잘못된 접근입니다.");
-        window.location.href = "/index.html"; // ✅ 잘못된 접근 시 홈으로 이동
+        // alert("잘못된 접근입니다.");
+        // window.location.href = "/index.html"; // ✅ 잘못된 접근 시 홈으로 이동
+        Swal.fire({
+            title: '잘못된 접근',
+            text: '다시 시도해주세요.',
+            icon: 'warning',
+        }).then(function(){
+            location.href="index.html";                   
+        });
         return;
     }
 
     try {
+        fetchMemberInfo(guesthouseId);
         const guesthouseData = await fetchGuesthouseDetail(guesthouseId); // ✅ API 요청
         updateGuesthouseUI(guesthouseData); // ✅ UI 업데이트
         const profileList = await fetchProfiles(guesthouseId); // ✅ 함께 지낼 사람 목록 불러오기
-        createProfileCards(profileList); // ✅ 프로필 UI 업데이트
+        createProfileCards(profileList, guesthouseData.capacity); // ✅ 프로필 UI 및 신청자 수 업데이트
         // ✅ 사용자가 '좋아요'를 눌렀는지 확인 후 UI 반영
         await checkIfLiked(guesthouseId, memberId);
         // ✅ 사용자가 게스트하우스를 신청했는지 확인 후 UI 반영
         await checkIfBooked(guesthouseId, memberId);
     } catch (error) {
         console.error("데이터 로드 오류:", error);
-        alert("게스트하우스 정보를 불러오는 중 문제가 발생했습니다.");
+        // alert("게스트하우스 정보를 불러오는 중 문제가 발생했습니다.");
+        Swal.fire({
+            // title: '오류 발생',
+            title: '조회 실패',
+            text: '게스트하우스 정보를 불러오지 못했습니다.',
+            icon: 'warning',
+        });
     }
 });
 
@@ -71,10 +86,10 @@ const fetchGuesthouseDetail = async (guesthouseId) => {
 
     // ✅ 태그를 배열로 변환
     const tagsArray = data.tags ? data.tags.split(",").map(tag => tag.trim()) : [];
-
     // ✅ 현재 사용자 MBTI 기반 점수 찾기
-    const userMbti = localStorage.getItem("userMbti") || "ENTP";
-    const matchingScore = data.scores.find(score => score.mbti === userMbti)?.totalScore || 0;
+    const userMbti = parseJwt(token).mbti || "ENTP";
+    const matchingScore = (data.scores.find(score => score.mbti === userMbti)?.totalScore || 0).toFixed(2);
+    console.log(matchingScore);
 
     return {
         guestHouseId: data.guestHouseId,
@@ -114,7 +129,6 @@ const fetchProfiles = async (guesthouseId) => {
 const updateGuesthouseUI = (guesthouseData) => {
     document.querySelector("h3").textContent = guesthouseData.name;
     document.querySelector(".text-muted").textContent = guesthouseData.description;
-    document.querySelector(".left-panel-image").src = guesthouseData.imageUrl;
 
     // ✅ 태그 리스트 업데이트
     const tagContainer = document.querySelector(".tag-list");
@@ -124,6 +138,10 @@ const updateGuesthouseUI = (guesthouseData) => {
 
     // ✅ MBTI 점수 업데이트
     updateMbtiScore(guesthouseData.mbtiScore);
+    const token = localStorage.getItem("token");
+    const userMbti = parseJwt(token).mbti || "ENTP";
+    document.querySelector(".mbti-compatibility-hint").textContent =
+        `👀 ${userMbti}와 이 숙소와의 매칭 점수는 ${guesthouseData.mbtiScore}점!`;
 };
 
 /**
@@ -133,19 +151,29 @@ const updateMbtiScore = (score) => {
     const mbtiScoreBarFill = document.getElementById('mbtiScoreBarFill');
     const mbtiScoreText = document.getElementById('mbtiScoreText');
 
-    mbtiScoreText.textContent = `${score}%`;
+    mbtiScoreText.textContent = `${score}점`;
     
     setTimeout(() => {
-        mbtiScoreBarFill.style.width = `${score}%`;
+        mbtiScoreBarFill.style.width = `${score}점`;
     }, 500);
 };
 
 /**
- * ✅ UI 업데이트: 같이 지낼 사람들 프로필 카드 생성
+ * ✅ UI 업데이트: 같이 지낼 사람들 프로필 카드 생성 및 신청자 수 업데이트
  */
-const createProfileCards = (profileList) => {
+const createProfileCards = (profileList, capacity) => {
     const profileContainer = document.getElementById('profileContainer');
     profileContainer.innerHTML = '';
+
+    // 신청자 수 업데이트: (신청 인원 / 전체 인원)
+    document.getElementById('applicantCountText').textContent = `${profileList.length}/${capacity}`;
+
+    // 신청자 수에 따른 score bar 업데이트
+    const scoreBarFill = document.getElementById('mbtiScoreBarFill2');
+    const ratio = (profileList.length / capacity) * 100;
+    setTimeout(() => {
+        scoreBarFill.style.width = `${ratio}%`;
+    }, 500);
 
     profileList.forEach(profile => {
         const card = document.createElement('div');
@@ -173,19 +201,41 @@ const createProfileCards = (profileList) => {
 const applyToGuesthouse = async () => {
     const guesthouseId = getGuesthouseIdFromQuery();
     const token = localStorage.getItem("token");
-    const memberId = parseJwt(token).memberId;
+    const decoded = parseJwt(token);
+    const memberId = decoded.memberId;
+    const mbti = decoded.mbti;
+
+    // ✅ 현재 신청자 목록과 게스트하우스 정보를 가져와 capacity 확인
+    const profileList = await fetchProfiles(guesthouseId);
+    const guesthouseData = await fetchGuesthouseDetail(guesthouseId);
+    
+    // 신청자 수가 게스트하우스 capacity 이상이면 신청 불가 처리
+    if (profileList.length >= guesthouseData.capacity) {
+         Swal.fire({
+             title: '신청 불가',
+             text: '게스트하우스의 정원이 모두 찼습니다.',
+             icon: 'warning'
+         });
+         return;
+    }
+
 
     // ✅ 이미 신청한 경우 확인
     const bookedGuesthouses = await fetchUserBooks(memberId);
     const alreadyBooked = bookedGuesthouses.some(guesthouse => guesthouse.guestHouseId === guesthouseId);
     
     if (alreadyBooked) {
-        alert("이미 신청한 게스트하우스입니다.");
+        // alert("이미 신청한 게스트하우스입니다.");
+        Swal.fire({
+            title: '신청 불가',
+            text: '이미 신청한 게스트하우스입니다.',
+            icon: 'info',
+        });
         return; // ✅ 신청 중단
     }
 
-    const url = `http://localhost:9000/status/book`; // ✅ API URL
-    const requestBody = {
+    const url_book = `http://localhost:9000/status/book`; // ✅ 신청 API URL
+    const requestBody_book = {
         memberId: memberId,
         guestHouseId: guesthouseId,
         bookReqDto: { flag: true },
@@ -194,26 +244,61 @@ const applyToGuesthouse = async () => {
     };
 
     try {
-        const response = await fetch(url, {
+        // ✅ 신청 요청
+        const response_book = await fetch(url_book, {
             method: "POST",
             headers: {
                 "Authorization": `Bearer ${token}`,
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify(requestBody)
+            body: JSON.stringify(requestBody_book)
         });
 
-        if (!response.ok) throw new Error("게스트하우스 신청에 실패했습니다.");
-        alert("신청이 완료되었습니다!");
+        if (!response_book.ok) throw new Error("게스트하우스 신청에 실패했습니다.");
+
+        // ✅ MBTI 점수 갱신 요청 (mbti[0], mbti[1], mbti[2], mbti[3] 각각 요청)
+        const url_update = `http://localhost:9000/scores/update`;
+        const requestBody_update = {
+            "mbti": mbti,  // ✅ 각 자리 문자에 대해 반복
+            "guestHouseId": guesthouseId
+        };
+
+        const response_update = await fetch(url_update, {
+            method: "PUT",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(requestBody_update),
+            mode: 'cors'
+        });
+        console.log(response_update);
+        if (!response_update.ok) {
+            console.error(`점수 갱신 실패 (${mbti[i]})`);
+        }
+
+        if (!response_book.ok) throw new Error("게스트하우스 신청에 실패했습니다.");
+        // alert("신청이 완료되었습니다!");
+        Swal.fire({
+            title: '신청 완료',
+            icon: 'success',
+        });
 
         // ✅ 신청 성공 후 블러 해제
         document.getElementById('profileSection').classList.remove('profiles-blurred');
+        updateApplicantCount(1);
 
     } catch (error) {
         console.error("신청 오류:", error);
-        alert("신청 중 문제가 발생했습니다.");
+        // alert("신청 중 문제가 발생했습니다.");
+        Swal.fire({
+            title: '신청 실패',
+            text: '신청 중 문제가 발생했습니다.',
+            icon: 'warning',
+        });
     }
 };
+
 
 /**
  * ✅ 신청 취소하기 API 요청
@@ -221,16 +306,20 @@ const applyToGuesthouse = async () => {
 const withdrawToGuesthouse = async () => {
     const guesthouseId = getGuesthouseIdFromQuery();
     const token = localStorage.getItem("token");
-    const memberId = parseJwt(token).memberId;
+    const decoded = parseJwt(token);
+    const memberId = decoded.memberId;
+    const mbti = decoded.mbti;
 
     // ✅ 신청 여부 확인
     const bookedGuesthouses = await fetchUserBooks(memberId);
     const isBooked = bookedGuesthouses.some(guesthouse => guesthouse.guestHouseId === guesthouseId);
-    console.log(bookedGuesthouses);
-    console.log(guesthouseId);
-    console.log(isBooked);
     if (!isBooked) {
-        alert("취소할 수 없습니다.");
+        // alert("취소할 수 없습니다.");
+        Swal.fire({
+            title: '취소 불가',
+            text: '신청하지 않은 게스트하우스입니다.',
+            icon: 'info',
+        });
         return; // ✅ 취소 중단
     }
 
@@ -252,17 +341,26 @@ const withdrawToGuesthouse = async () => {
             },
             body: JSON.stringify(requestBody)
         });
-        console.log(response);
 
         if (!response.ok) throw new Error("게스트하우스 신청 취소에 실패했습니다.");
-        alert("취소가 완료되었습니다!");
+        // alert("취소가 완료되었습니다!");
+        Swal.fire({
+            title: '취소 완료',
+            icon: 'success',
+        });
 
         // ✅ 취소 성공 후 블러 처리
         document.getElementById('profileSection').classList.add('profiles-blurred');
+        updateApplicantCount(-1);
 
     } catch (error) {
         console.error("취소 오류:", error);
-        alert("취소 중 문제가 발생했습니다.");
+        // alert("취소 중 문제가 발생했습니다.");
+        Swal.fire({
+            title: '취소 실패',
+            text: '취소 중 문제가 발생했습니다.',
+            icon: 'warning',
+        });
     }
 };
 
@@ -274,7 +372,6 @@ const getMemberIdFromJWT = (jwt) => {
     try {
         const payloadBase64 = jwt.split(".")[1]; // JWT의 Payload 부분 추출
         const payloadDecoded = JSON.parse(atob(payloadBase64)); // Base64 디코딩 후 JSON 변환
-        console.log(payloadDecoded);
         return payloadDecoded.memberId; // ✅ memberId 값 반환
     } catch (error) {
         console.error("JWT 디코딩 오류:", error);
@@ -295,17 +392,85 @@ function parseJwt(token) {
     }
 }
 
-function toggleBookmark(btn) {
-    btn.classList.toggle('active');
-}
+
+/**
+ * ✅ 찜하기 버튼 토글 기능
+ */
+const toggleBookmark = async (btn) => {
+    const guesthouseId = getGuesthouseIdFromQuery();
+    const token = localStorage.getItem("token");
+    const memberId = parseJwt(token).memberId;
+
+    if (!guesthouseId) {
+        // alert("잘못된 접근입니다.");
+        Swal.fire({
+            title: '잘못된 접근입니다.',
+            icon: 'warning',
+        });
+        return;
+    }
+
+    // ✅ 현재 찜 상태 확인
+    const likedGuesthouses = await fetchUserLikes(memberId);
+    const isLiked = likedGuesthouses.some(guesthouse => guesthouse.guestHouseId === guesthouseId);
+
+    // ✅ 찜 상태를 토글 (현재 찜 상태면 해제, 아니라면 추가)
+    const newLikeStatus = !isLiked;
+    const requestBody = {
+        memberId: memberId,
+        guestHouseId: guesthouseId,
+        likeReqDto: { flag: newLikeStatus }, // ✅ 여기서 토글
+        bookReqDto: { flag: false },
+        usedReqDto: { flag: false }
+    };
+
+    const url = `http://localhost:9000/status/like`; // ✅ API URL
+
+    try {
+        const response = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(requestBody),
+            mode: 'cors'
+        });
+
+        if (!response.ok) throw new Error("찜 상태 변경에 실패했습니다.");
+
+        // ✅ 찜 상태 업데이트 성공 시 버튼 UI 변경
+        btn.classList.toggle('active', newLikeStatus);
+        // alert(newLikeStatus ? "찜한 게스트하우스에 추가되었습니다!" : "찜한 게스트하우스에서 제거되었습니다!");
+        Swal.fire({
+            title: newLikeStatus ? '찜 완료' : '찜 취소 완료',
+            text: newLikeStatus ? '찜한 게스트하우스에 추가되었습니다.' : "찜한 게스트하우스에서 제거되었습니다.",
+            icon: 'success',
+        });
+    } catch (error) {
+        console.error("찜 토글 오류:", error);
+        // alert("찜 상태 변경 중 문제가 발생했습니다.");
+        Swal.fire({
+            title: '찜 실패',
+            text: '상태 변경 중 문제가 발생했습니다.',
+            icon: 'warning',
+        });
+    }
+};
 
 
 
 document.querySelector(".logout-btn").addEventListener("click", function (event) {
     event.preventDefault();
     localStorage.removeItem("token");
-    alert("로그아웃되었습니다.");
-    window.location.href = "login.html";
+    // alert("로그아웃되었습니다.");
+    // window.location.href = "login.html";
+    Swal.fire({
+        title: '로그아웃되었습니다.',
+        icon: 'success',
+    }).then(function(){
+        location.href="login.html";                   
+    });
 });
 
 // New fade-in animations
@@ -402,8 +567,6 @@ const fetchUserBooks = async (memberId) => {
  */
 const checkIfBooked = async (guesthouseId, memberId) => {
     const BookedGuesthouses = await fetchUserBooks(memberId); // ✅ 사용자의 신청 목록 가져오기
-    console.log(BookedGuesthouses);
-    console.log(guesthouseId);
     // ✅ 신청 목록에 현재 게스트하우스가 포함되어 있는지 확인
     const isBooked = BookedGuesthouses.some(guesthouse => guesthouse.guestHouseId === guesthouseId);
 
@@ -413,3 +576,44 @@ const checkIfBooked = async (guesthouseId, memberId) => {
     }
 };
 
+async function fetchMemberInfo(memberId) {
+    try {
+        const response = await fetch(`http://127.0.0.1:9000/member/${memberId}`,{
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                'Access-Control-Allow-Origin': '*', // 모든 도메인에 대해 CORS 허용
+                mode: 'cors', // CORS 요청 모드 설정
+            }
+        });
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        console.log(data);
+        // 멤버 정보가 존재하는 경우 업데이트
+        if (data.imgUrl && data.name) {
+            document.querySelector(".left-panel-profile-image").src = data.imgUrl;
+            document.querySelector(".profile-name").textContent = data.name;
+        }
+    } catch (error) {
+        console.error("Error fetching member info:", error);
+    }
+}
+
+const updateApplicantCount = (change) => {
+    const applicantText = document.getElementById("applicantCountText");
+    const progressBar = document.getElementById("mbtiScoreBarFill2");
+
+    let [current, max] = applicantText.textContent.split("/").map(Number);
+
+    // ✅ 신청자가 0 이상 && 최대 인원 이하일 때만 변경
+    current = Math.max(0, Math.min(max, current + change));
+
+    // ✅ 신청자 수 UI 업데이트
+    applicantText.textContent = `${current}/${max}`;
+
+    // ✅ 진행 바 너비 업데이트 (비율 계산)
+    progressBar.style.width = `${(current / max) * 100}%`;
+};

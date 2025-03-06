@@ -224,6 +224,7 @@ body {
     box-shadow: 0 5px 5px rgba(0,0,0,0.2);
     /* transition: 0.5s; */
     break-inside: avoid;
+    cursor: pointer;
 }
 
 #card-container {
@@ -239,9 +240,18 @@ body {
 }
 
 .btn-detail {
-    background-color: #bdaeff;
-    color: white;
+    background-color: var(--button-color);
+    color: black;
     float: right;
+    border: none;
+    border-radius: 6px;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.btn-detail:hover {
+    background-color: #ffdcee;
+    box-shadow: #000;
 }
 
 @media (max-width: 768px) {
