@@ -167,6 +167,13 @@ const createProfileCards = (profileList, capacity) => {
     // 신청자 수 업데이트: (신청 인원 / 전체 인원)
     document.getElementById('applicantCountText').textContent = `${profileList.length}/${capacity}`;
 
+    // 신청자 수에 따른 score bar 업데이트
+    const scoreBarFill = document.getElementById('mbtiScoreBarFill2');
+    const ratio = (profileList.length / capacity) * 100;
+    setTimeout(() => {
+        scoreBarFill.style.width = `${ratio}%`;
+    }, 500);
+
     profileList.forEach(profile => {
         const card = document.createElement('div');
         card.classList.add('profile-card');
