@@ -270,6 +270,7 @@ const applyToGuesthouse = async () => {
 
         // ✅ 신청 성공 후 블러 해제
         document.getElementById('profileSection').classList.remove('profiles-blurred');
+        updateApplicantCount(1);
 
     } catch (error) {
         console.error("신청 오류:", error);
@@ -334,6 +335,7 @@ const withdrawToGuesthouse = async () => {
 
         // ✅ 취소 성공 후 블러 처리
         document.getElementById('profileSection').classList.add('profiles-blurred');
+        updateApplicantCount(-1);
 
     } catch (error) {
         console.error("취소 오류:", error);
@@ -583,3 +585,19 @@ async function fetchMemberInfo(memberId) {
         console.error("Error fetching member info:", error);
     }
 }
+
+const updateApplicantCount = (change) => {
+    const applicantText = document.getElementById("applicantCountText");
+    const progressBar = document.getElementById("mbtiScoreBarFill2");
+
+    let [current, max] = applicantText.textContent.split("/").map(Number);
+
+    // ✅ 신청자가 0 이상 && 최대 인원 이하일 때만 변경
+    current = Math.max(0, Math.min(max, current + change));
+
+    // ✅ 신청자 수 UI 업데이트
+    applicantText.textContent = `${current}/${max}`;
+
+    // ✅ 진행 바 너비 업데이트 (비율 계산)
+    progressBar.style.width = `${(current / max) * 100}%`;
+};
