@@ -1,4 +1,4 @@
-//추가 필요: 1.기본 프로필 데이터에서 guesthouse 사용목록 추가 2. detail.html과 연결 3. guesthouse의 점수 잘 나오는지 test
+//추가 필요: 1.기본 프로필 데이터에서 guesthouse 사용목록 추가 2. detail.html과 연결
 
 document.addEventListener("DOMContentLoaded", function () {
     // ✅ 1. 사용자 정보 데이터 (추후 서버에서 가져와야 함)
@@ -117,6 +117,27 @@ document.addEventListener("DOMContentLoaded", function () {
     //                 </div>
     //             `;
     //     cardContainer.innerHTML += cardHTML;
+
+    //     // const div = document.createElement("div");
+    //     // div.className = "list-item" + (item.recommended ? " recommended" : " general");
+
+    //     // const starSpan = document.createElement("span");
+    //     // starSpan.className = "star";
+    //     // starSpan.textContent = item.recommended ? "★" : "";
+
+    //     // const nameLink = document.createElement("a");
+    //     // nameLink.className = "name-link";
+    //     // nameLink.textContent = item.name;
+    //     // nameLink.href = item.link;
+
+    //     // const scoreSpan = document.createElement("span");
+    //     // scoreSpan.className = "score-circle";
+    //     // scoreSpan.textContent = item.score;
+
+    //     // div.appendChild(starSpan);
+    //     // div.appendChild(nameLink);
+    //     // div.appendChild(scoreSpan);
+    //     // listElement.appendChild(div);
     // });
 
     // ✅ 3. 찜한 게스트하우스 목록
@@ -147,8 +168,16 @@ document.addEventListener("DOMContentLoaded", function () {
                     const div = document.createElement("div");
                     div.className = "list-item-small";
                     // 예시로 이름을 표시합니다. 필요에 따라 링크나 추가 정보를 표시 가능
-                    div.textContent = item.name;
+
+                    const img = document.createElement("img");
+                    img.src = item.bgImgUrl;
+
+                    const span = document.createElement("span");
+                    span.textContent = item.name;
+
                     likedlistElement.appendChild(div);
+                    div.appendChild(img);
+                    div.appendChild(span);
                 });
             })
             .catch(error => console.error("Error fetching liked guesthouse list:", error));
@@ -166,8 +195,16 @@ document.addEventListener("DOMContentLoaded", function () {
                     const div = document.createElement("div");
                     div.className = "list-item-small";
                     // 필요에 따라 링크나 추가 정보를 표시할 수 있음
-                    div.textContent = item.name;
+
+                    const img = document.createElement("img");
+                    img.src = item.bgImgUrl;
+
+                    const span = document.createElement("span");
+                    span.textContent = item.name;
+
                     usedlistElement.appendChild(div);
+                    div.appendChild(img);
+                    div.appendChild(span);
                 });
             })
             .catch(error => console.error("Error fetching used guesthouse list:", error));
@@ -206,5 +243,36 @@ document.addEventListener("DOMContentLoaded", function () {
             console.error("Invalid JWT Token", e);
             return null;
         }
+    }
+});
+
+// New fade-in animations
+const fadeInElements = [
+    '.header',
+    '.profile-img',
+    '.profile-info',
+    '.left',
+    '.right',
+
+    '.title',
+    '.wishlist-usedlist',
+
+    '.row',
+    '.card-container',
+    '.card'
+];
+
+// Staggered fade-in animation
+fadeInElements.forEach((selector, index) => {
+    const element = document.querySelector(selector);
+    if (element) {
+        element.style.opacity = '0';
+        element.style.transform = 'translateY(20px)';
+        
+        setTimeout(() => {
+            element.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+            element.style.opacity = '1';
+            element.style.transform = 'translateY(0)';
+        }, 200 * (index + 1)); // Staggered delay
     }
 });
