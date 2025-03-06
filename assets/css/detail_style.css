@@ -35,10 +35,9 @@ body {
     color: var(--text-color);
 }
 
-.head-title {
+.head-title, .guest-house-head-title {
     font-weight: 700 !important;
 }
-
 
 .full-height {
     min-height: 100vh;
@@ -126,9 +125,9 @@ body {
     overflow: hidden;
 }
 
-.left-panel-image {
-    width: 100%;
-    height: 250px;
+.right-panel-image {
+    width: 40%;
+    height: 32vh;
     object-fit: cover;
     border-radius: 15px;
     margin-bottom: 15px;
@@ -160,8 +159,22 @@ body {
 
 .bookmark-btn.active {
     opacity: 1;
-    background-color: rgba(255, 36, 36, 1);
+    background-color: hsl(335, 100%, 88%);
 }
+
+.right-panel-container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+.right-panel-text-content {
+    flex: 1;
+    max-width: 50%;
+    align-self: center;
+}
+
 
 .right-panel {
     background: white;
@@ -244,7 +257,7 @@ body {
     animation: pulse 2s infinite;
 }
 
-.guesthouse-image {
+.guesthouse-image, .left-panel-profile-image {
     width: 100%;
     height: 300px;
     object-fit: cover;
@@ -278,7 +291,7 @@ body {
     display: flex;
     gap: 10px;
     width: 100%;
-    margin-top: 15px;
+    margin: -20px 0px 0px 0px;
 }
 
 .btn-custom {
@@ -311,7 +324,7 @@ body {
 }
 
 .profile-container {
-    max-height: 45vh;
+    max-height: 38vh;
     overflow-y: auto;
     display: grid;
     grid-template-columns: 1fr;
@@ -320,7 +333,7 @@ body {
     gap: 20px;
     padding-right: 15px;
 }
-.profile-card {
+.profile-card, .boss-profile-card {
     background: linear-gradient(145deg, var(--light-background), #ffffff);
     border-radius: 15px;
     box-shadow: 
@@ -336,7 +349,7 @@ body {
     margin: 15px 0px 15px 15px;
 }
 
-.profile-card:hover {
+.profile-card:hover, .boss-profile-card:hover {
     transform: translateY(-10px);
     border-color: var(--accent-color-1);
     box-shadow: 
@@ -344,7 +357,17 @@ body {
         0 8px 15px rgba(108, 71, 255, 0.1);
 }
 
-.profile-image {
+.boss-profile-card{
+    margin: 0px 0px 15px 0px;
+    opacity: 0.95;
+}
+
+.boss-profile-card:hover {
+    transform: none;
+    opacity: 1;
+}
+
+.profile-image, .left-panel-profile-image{
     width: 120px;
     height: 120px;
     border-radius: 50%;
@@ -352,6 +375,22 @@ body {
     margin-bottom: 15px;
     border: 4px solid var(--accent-color-2);
     box-shadow: 0 5px 15px rgba(108, 71, 255, 0.2);
+}
+
+.left-panel-profile-image{
+    width: 20vh;
+    height: 20vh;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 15px;
+    border: 4px solid var(--accent-color-2);
+    box-shadow: 0 5px 15px rgba(108, 71, 255, 0.2);    
+    align-self: center;
+    border: 4px solid var(--accent-color-3);
+}
+
+.mbti-bottom-container{
+    margin-top: 1rem;
 }
 
 .profile-details {

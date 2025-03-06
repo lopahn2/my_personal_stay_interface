@@ -33,9 +33,15 @@
             <!-- ✅ 왼쪽 패널 (게스트하우스 이미지 & 신청 버튼) -->
             <div class="left-panel">
                 <!-- 게스트하우스 대표 이미지 -->
-                <img src="http://the-plus.net/wp-content/uploads/2019/05/001.jpg" alt="게스트하우스 이미지" class="left-panel-image">
-
-                <!-- 찜하기 버튼 -->
+                <div class="boss-profile-card">
+                    <img src="https://i.namu.wiki/i/PQ4icRK1-ro7m-cZsSEMwocU2cnDNC2URRVjcuTy56WqLRPE0fb136O13n5eFCpqTdZ6yNehyc8muQxxq8qK8lrhLIz0e_uLX6HOKXgeMn-WLIQvR5JwYP6qgasC35PFhznRWTORqkI11ptmoE4QVQ.webp" alt="게스트하우스 사장님 이미지" class="left-panel-profile-image">
+                    <div class="profile-info">
+                        <div class="profile-name">이경영 사장님</div>
+                        <div class="profile-message">안녕하세요! 최고의 서비스를 제공하겠습니다. 😊</div>
+                    </div>
+                </div>
+                
+                <!-- 찜하기 버튼 -->    
                 <button class="bookmark-btn" onclick="toggleBookmark(this)">
                     🔖
                 </button>
@@ -52,8 +58,19 @@
                         </div>
                         <div class="mbti-compatibility-hint">
                             👀 ESFJ와 이 숙소와의 매칭 점수는 25점!
-                        </div>
+                        </div>                                             
                     </div>
+                    <div class="mb-4 mbti-bottom-container">
+                        <div class="mbti-score-container">
+                            <div class="mbti-compatibility-label">
+                                <span>신청자 수</span>
+                                <span id="mbtiScoreText">6/10</span>
+                            </div>
+                            <div class="mbti-score-bar">
+                                <div id="mbtiScoreBarFill2" class="mbti-score-bar-fill"></div>
+                            </div>
+                        </div>
+                    </div>                    
                 </div>
 
                 <!-- 신청 & 취소 버튼 -->
@@ -65,36 +82,30 @@
 
             <!-- ✅ 오른쪽 패널 (게스트하우스 정보 & 신청자 목록) -->
             <div class="right-panel">
-                <div>
-                    <!-- 태그 리스트 -->
-                    <div class="tag-list">
-                        <span class="profile-tag">조용한</span>
-                        <span class="profile-tag">친절한</span>
-                        <span class="profile-tag">깔끔한</span>
-                        <span class="profile-tag">편안한</span>
-                        <span class="profile-tag">아늑한</span>
+                <div class="right-panel-container">
+                    <div class="right-panel-text-content">
+                         <!-- 태그 리스트 -->
+                        <div class="tag-list">
+                            <span class="profile-tag">조용한</span>
+                            <span class="profile-tag">친절한</span>
+                            <span class="profile-tag">깔끔한</span>
+                            <span class="profile-tag">편안한</span>
+                            <span class="profile-tag">아늑한</span>
+                        </div>
+                        
+                        <h3 class="mb-3 guest-house-head-title">평화로운 게스트하우스</h3>
+                        <p class="text-muted mb-4">자연과 함께하는 편안한 휴식처, 당신만의 특별한 공간을 만나보세요.</p>
                     </div>
-                    
-                    <h3 class="mb-3 head-title">평화로운 게스트하우스</h3>
-                    <p class="text-muted mb-4">자연과 함께하는 편안한 휴식처, 당신만의 특별한 공간을 만나보세요.</p>
+                    <img src="http://the-plus.net/wp-content/uploads/2019/05/001.jpg" alt="게스트하우스 이미지" class="right-panel-image">
 
                     <!-- 현재 신청 인원 및 진행 바 -->
-                    <div class="mb-4">
-                        <div class="mbti-score-container">
-                            <div class="mbti-compatibility-label">
-                                <span>신청자 수</span>
-                                <span id="mbtiScoreText">6/10</span>
-                            </div>
-                            <div class="mbti-score-bar">
-                                <div id="mbtiScoreBarFill2" class="mbti-score-bar-fill"></div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
 
                 <!-- ✅ 같이 지낼 사람들 정보 -->
                 <div id="profileSection" class="profiles-blurred">
+                    
                     <h5 class="mb-4 head-title">같이 지낼 사람들</h5>
+                    
                     <div class="profile-container" id="profileContainer">
                         <!-- 신청자 프로필이 동적으로 추가될 예정 -->
                     </div>
