@@ -42,6 +42,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 guesthouse: decoded.guesthouse || defaultProfileData.guesthouse// 신청 내역은 추가 필요
             
             };
+
+            console.log(profileData);
         } else {
             profileData = defaultProfileData;
         }
