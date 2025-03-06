@@ -235,31 +235,26 @@ const applyToGuesthouse = async () => {
 
         // ✅ MBTI 점수 갱신 요청 (mbti[0], mbti[1], mbti[2], mbti[3] 각각 요청)
         const url_update = `http://localhost:9000/scores/update`;
+        const requestBody_update = {
+            "mbti": mbti,  // ✅ 각 자리 문자에 대해 반복
+            "guestHouseId": guesthouseId
+        };
 
-        for (let i = 0; i < 4; i++) {
-            if (!mbti[i]) continue; // ✅ MBTI 문자열이 4자 미만인 경우 방지
-
-            const requestBody_update = {
-                "mbti": mbti[i],  // ✅ 각 자리 문자에 대해 반복
-                "guestHouseId": guesthouseId
-            };
-
-            const response_update = await fetch(url_update, {
-                method: "PUT",
-                headers: {
-                    "Authorization": `Bearer ${token}`,
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(requestBody_update)
-            });
-
-            if (!response_update.ok) {
-                console.error(`점수 갱신 실패 (${mbti[i]})`);
-            }
+        const response_update = await fetch(url_update, {
+            method: "PUT",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(requestBody_update),
+            mode: 'cors'
+        });
+        console.log(response_update);
+        if (!response_update.ok) {
+            console.error(`점수 갱신 실패 (${mbti[i]})`);
         }
 
-        alert("신청이 완료되었습니다!");
-        if (!response.ok) throw new Error("게스트하우스 신청에 실패했습니다.");
+        if (!response_book.ok) throw new Error("게스트하우스 신청에 실패했습니다.");
         // alert("신청이 완료되었습니다!");
         Swal.fire({
             title: '신청 완료',
@@ -413,7 +408,8 @@ const toggleBookmark = async (btn) => {
                 "Authorization": `Bearer ${token}`,
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify(requestBody)
+            body: JSON.stringify(requestBody),
+            mode: 'cors'
         });
 
         if (!response.ok) throw new Error("찜 상태 변경에 실패했습니다.");
@@ -557,7 +553,7 @@ const checkIfBooked = async (guesthouseId, memberId) => {
 
 async function fetchMemberInfo(memberId) {
     try {
-        const response = await fetch(`http://127.0.0.1:9000/member/${memberId}`);
+        const response = await fetch(`http://localhost:9000/member/${memberId}`);
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
