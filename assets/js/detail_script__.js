@@ -71,9 +71,8 @@ const fetchGuesthouseDetail = async (guesthouseId) => {
 
     // ✅ 태그를 배열로 변환
     const tagsArray = data.tags ? data.tags.split(",").map(tag => tag.trim()) : [];
-
     // ✅ 현재 사용자 MBTI 기반 점수 찾기
-    const userMbti = localStorage.getItem("userMbti") || "ENTP";
+    const userMbti = parseJwt(token).mbti || "ENTP";
     const matchingScore = data.scores.find(score => score.mbti === userMbti)?.totalScore || 0;
 
     return {
