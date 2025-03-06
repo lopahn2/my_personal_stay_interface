@@ -147,8 +147,16 @@ document.addEventListener("DOMContentLoaded", function () {
                     const div = document.createElement("div");
                     div.className = "list-item-small";
                     // 예시로 이름을 표시합니다. 필요에 따라 링크나 추가 정보를 표시 가능
-                    div.textContent = item.name;
+
+                    const img = document.createElement("img");
+                    img.src = item.bgImgUrl;
+
+                    const span = document.createElement("span");
+                    span.textContent = item.name;
+
                     likedlistElement.appendChild(div);
+                    div.appendChild(img);
+                    div.appendChild(span);
                 });
             })
             .catch(error => console.error("Error fetching liked guesthouse list:", error));
@@ -166,8 +174,16 @@ document.addEventListener("DOMContentLoaded", function () {
                     const div = document.createElement("div");
                     div.className = "list-item-small";
                     // 필요에 따라 링크나 추가 정보를 표시할 수 있음
-                    div.textContent = item.name;
+
+                    const img = document.createElement("img");
+                    img.src = item.bgImgUrl;
+
+                    const span = document.createElement("span");
+                    span.textContent = item.name;
+
                     usedlistElement.appendChild(div);
+                    div.appendChild(img);
+                    div.appendChild(span);
                 });
             })
             .catch(error => console.error("Error fetching used guesthouse list:", error));
