@@ -114,7 +114,6 @@ const fetchProfiles = async (guesthouseId) => {
 const updateGuesthouseUI = (guesthouseData) => {
     document.querySelector("h3").textContent = guesthouseData.name;
     document.querySelector(".text-muted").textContent = guesthouseData.description;
-    document.querySelector(".left-panel-image").src = guesthouseData.imageUrl;
 
     // ✅ 태그 리스트 업데이트
     const tagContainer = document.querySelector(".tag-list");
@@ -413,3 +412,24 @@ const checkIfBooked = async (guesthouseId, memberId) => {
     }
 };
 
+// function createProfileCards(profiles) {
+//     const profileContainer = document.getElementById('profileContainer');
+//     profileContainer.innerHTML = '';
+
+//     profiles.forEach(profile => {
+//         const card = document.createElement('div');
+//         card.classList.add('profile-card');
+
+//         card.innerHTML = `
+//             <img src="${profile.imageUrl}" alt="${profile.name}" class="profile-image">
+//             <div class="profile-name">${profile.name}</div>
+//             <div class="profile-info">${profile.age}세 · ${profile.job}</div>
+//             <div class="profile-info">${profile.introduction}</div>
+//             <div class="profile-tags">
+//                 ${profile.tags.map(tag => `<span class="profile-tag">${tag}</span>`).join('')}
+//             </div>
+//         `;
+
+//         profileContainer.appendChild(card);
+//     });
+// }

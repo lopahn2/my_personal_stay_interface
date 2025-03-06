@@ -48,7 +48,6 @@ document.addEventListener("DOMContentLoaded", function () {
             
             };
 
-            console.log(profileData);
         } else {
             profileData = defaultProfileData;
         }
@@ -195,7 +194,6 @@ document.addEventListener("DOMContentLoaded", function () {
     // });
 
     // (API: GET /status/like/{id})
-    console.log(profileData)
     if (profileData.memberId) {
         fetch(`http://localhost:9000/status/like/${profileData.memberId}`)
             .then(response => response.json())
