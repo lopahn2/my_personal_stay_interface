@@ -19,24 +19,39 @@ document.addEventListener("DOMContentLoaded", async () => {
     const token = localStorage.getItem("token");
     const memberId = parseJwt(token).memberId;
 
+
     if (!guesthouseId) {
-        alert("잘못된 접근입니다.");
-        window.location.href = "/index.html"; // ✅ 잘못된 접근 시 홈으로 이동
+        // alert("잘못된 접근입니다.");
+        // window.location.href = "/index.html"; // ✅ 잘못된 접근 시 홈으로 이동
+        Swal.fire({
+            title: '잘못된 접근',
+            text: '다시 시도해주세요.',
+            icon: 'warning',
+        }).then(function(){
+            location.href="index.html";                   
+        });
         return;
     }
 
     try {
+        fetchMemberInfo(guesthouseId);
         const guesthouseData = await fetchGuesthouseDetail(guesthouseId); // ✅ API 요청
         updateGuesthouseUI(guesthouseData); // ✅ UI 업데이트
         const profileList = await fetchProfiles(guesthouseId); // ✅ 함께 지낼 사람 목록 불러오기
-        createProfileCards(profileList); // ✅ 프로필 UI 업데이트
+        createProfileCards(profileList, guesthouseData.capacity); // ✅ 프로필 UI 및 신청자 수 업데이트
         // ✅ 사용자가 '좋아요'를 눌렀는지 확인 후 UI 반영
         await checkIfLiked(guesthouseId, memberId);
         // ✅ 사용자가 게스트하우스를 신청했는지 확인 후 UI 반영
         await checkIfBooked(guesthouseId, memberId);
     } catch (error) {
         console.error("데이터 로드 오류:", error);
-        alert("게스트하우스 정보를 불러오는 중 문제가 발생했습니다.");
+        // alert("게스트하우스 정보를 불러오는 중 문제가 발생했습니다.");
+        Swal.fire({
+            // title: '오류 발생',
+            title: '조회 실패',
+            text: '게스트하우스 정보를 불러오지 못했습니다.',
+            icon: 'warning',
+        });
     }
 });
 
@@ -122,6 +137,10 @@ const updateGuesthouseUI = (guesthouseData) => {
 
     // ✅ MBTI 점수 업데이트
     updateMbtiScore(guesthouseData.mbtiScore);
+    const token = localStorage.getItem("token");
+    const userMbti = parseJwt(token).mbti || "ENTP";
+    document.querySelector(".mbti-compatibility-hint").textContent =
+        `👀 ${userMbti}와 이 숙소와의 매칭 점수는 ${guesthouseData.mbtiScore}점!`;
 };
 
 /**
@@ -139,11 +158,14 @@ const updateMbtiScore = (score) => {
 };
 
 /**
- * ✅ UI 업데이트: 같이 지낼 사람들 프로필 카드 생성
+ * ✅ UI 업데이트: 같이 지낼 사람들 프로필 카드 생성 및 신청자 수 업데이트
  */
-const createProfileCards = (profileList) => {
+const createProfileCards = (profileList, capacity) => {
     const profileContainer = document.getElementById('profileContainer');
     profileContainer.innerHTML = '';
+
+    // 신청자 수 업데이트: (신청 인원 / 전체 인원)
+    document.getElementById('applicantCountText').textContent = `${profileList.length}/${capacity}`;
 
     profileList.forEach(profile => {
         const card = document.createElement('div');
@@ -180,7 +202,12 @@ const applyToGuesthouse = async () => {
     const alreadyBooked = bookedGuesthouses.some(guesthouse => guesthouse.guestHouseId === guesthouseId);
     
     if (alreadyBooked) {
-        alert("이미 신청한 게스트하우스입니다.");
+        // alert("이미 신청한 게스트하우스입니다.");
+        Swal.fire({
+            title: '신청 불가',
+            text: '이미 신청한 게스트하우스입니다.',
+            icon: 'info',
+        });
         return; // ✅ 신청 중단
     }
 
@@ -232,13 +259,24 @@ const applyToGuesthouse = async () => {
         }
 
         alert("신청이 완료되었습니다!");
+        if (!response.ok) throw new Error("게스트하우스 신청에 실패했습니다.");
+        // alert("신청이 완료되었습니다!");
+        Swal.fire({
+            title: '신청 완료',
+            icon: 'success',
+        });
 
         // ✅ 신청 성공 후 블러 해제
         document.getElementById('profileSection').classList.remove('profiles-blurred');
 
     } catch (error) {
         console.error("신청 오류:", error);
-        alert("신청 중 문제가 발생했습니다.");
+        // alert("신청 중 문제가 발생했습니다.");
+        Swal.fire({
+            title: '신청 실패',
+            text: '신청 중 문제가 발생했습니다.',
+            icon: 'warning',
+        });
     }
 };
 
@@ -257,7 +295,12 @@ const withdrawToGuesthouse = async () => {
     const bookedGuesthouses = await fetchUserBooks(memberId);
     const isBooked = bookedGuesthouses.some(guesthouse => guesthouse.guestHouseId === guesthouseId);
     if (!isBooked) {
-        alert("취소할 수 없습니다.");
+        // alert("취소할 수 없습니다.");
+        Swal.fire({
+            title: '취소 불가',
+            text: '신청하지 않은 게스트하우스입니다.',
+            icon: 'info',
+        });
         return; // ✅ 취소 중단
     }
 
@@ -281,14 +324,23 @@ const withdrawToGuesthouse = async () => {
         });
 
         if (!response.ok) throw new Error("게스트하우스 신청 취소에 실패했습니다.");
-        alert("취소가 완료되었습니다!");
+        // alert("취소가 완료되었습니다!");
+        Swal.fire({
+            title: '취소 완료',
+            icon: 'success',
+        });
 
         // ✅ 취소 성공 후 블러 처리
         document.getElementById('profileSection').classList.add('profiles-blurred');
 
     } catch (error) {
         console.error("취소 오류:", error);
-        alert("취소 중 문제가 발생했습니다.");
+        // alert("취소 중 문제가 발생했습니다.");
+        Swal.fire({
+            title: '취소 실패',
+            text: '취소 중 문제가 발생했습니다.',
+            icon: 'warning',
+        });
     }
 };
 
@@ -330,7 +382,11 @@ const toggleBookmark = async (btn) => {
     const memberId = parseJwt(token).memberId;
 
     if (!guesthouseId) {
-        alert("잘못된 접근입니다.");
+        // alert("잘못된 접근입니다.");
+        Swal.fire({
+            title: '잘못된 접근입니다.',
+            icon: 'warning',
+        });
         return;
     }
 
@@ -364,11 +420,20 @@ const toggleBookmark = async (btn) => {
 
         // ✅ 찜 상태 업데이트 성공 시 버튼 UI 변경
         btn.classList.toggle('active', newLikeStatus);
-        alert(newLikeStatus ? "찜한 게스트하우스에 추가되었습니다!" : "찜한 게스트하우스에서 제거되었습니다!");
-
+        // alert(newLikeStatus ? "찜한 게스트하우스에 추가되었습니다!" : "찜한 게스트하우스에서 제거되었습니다!");
+        Swal.fire({
+            title: newLikeStatus ? '찜 완료' : '찜 취소 완료',
+            text: newLikeStatus ? '찜한 게스트하우스에 추가되었습니다.' : "찜한 게스트하우스에서 제거되었습니다.",
+            icon: 'success',
+        });
     } catch (error) {
         console.error("찜 토글 오류:", error);
-        alert("찜 상태 변경 중 문제가 발생했습니다.");
+        // alert("찜 상태 변경 중 문제가 발생했습니다.");
+        Swal.fire({
+            title: '찜 실패',
+            text: '상태 변경 중 문제가 발생했습니다.',
+            icon: 'warning',
+        });
     }
 };
 
@@ -377,8 +442,14 @@ const toggleBookmark = async (btn) => {
 document.querySelector(".logout-btn").addEventListener("click", function (event) {
     event.preventDefault();
     localStorage.removeItem("token");
-    alert("로그아웃되었습니다.");
-    window.location.href = "login.html";
+    // alert("로그아웃되었습니다.");
+    // window.location.href = "login.html";
+    Swal.fire({
+        title: '로그아웃되었습니다.',
+        icon: 'success',
+    }).then(function(){
+        location.href="login.html";                   
+    });
 });
 
 // New fade-in animations
@@ -484,24 +555,21 @@ const checkIfBooked = async (guesthouseId, memberId) => {
     }
 };
 
-// function createProfileCards(profiles) {
-//     const profileContainer = document.getElementById('profileContainer');
-//     profileContainer.innerHTML = '';
-
-//     profiles.forEach(profile => {
-//         const card = document.createElement('div');
-//         card.classList.add('profile-card');
-
-//         card.innerHTML = `
-//             <img src="${profile.imageUrl}" alt="${profile.name}" class="profile-image">
-//             <div class="profile-name">${profile.name}</div>
-//             <div class="profile-info">${profile.age}세 · ${profile.job}</div>
-//             <div class="profile-info">${profile.introduction}</div>
-//             <div class="profile-tags">
-//                 ${profile.tags.map(tag => `<span class="profile-tag">${tag}</span>`).join('')}
-//             </div>
-//         `;
-
-//         profileContainer.appendChild(card);
-//     });
-// }
+async function fetchMemberInfo(memberId) {
+    try {
+        const response = await fetch(`http://127.0.0.1:9000/member/${memberId}`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        console.log(data);
+        // 멤버 정보가 존재하는 경우 업데이트
+        if (data.imgUrl && data.name) {
+            document.querySelector(".left-panel-profile-image").src = data.imgUrl;
+            document.querySelector(".profile-name").textContent = data.name;
+        }
+    } catch (error) {
+        console.error("Error fetching member info:", error);
+    }
+}
