@@ -294,9 +294,57 @@ function parseJwt(token) {
     }
 }
 
-function toggleBookmark(btn) {
-    btn.classList.toggle('active');
-}
+
+/**
+ * ✅ 찜하기 버튼 토글 기능
+ */
+const toggleBookmark = async (btn) => {
+    const guesthouseId = getGuesthouseIdFromQuery();
+    const token = localStorage.getItem("token");
+    const memberId = parseJwt(token).memberId;
+
+    if (!guesthouseId) {
+        alert("잘못된 접근입니다.");
+        return;
+    }
+
+    // ✅ 현재 찜 상태 확인
+    const likedGuesthouses = await fetchUserLikes(memberId);
+    const isLiked = likedGuesthouses.some(guesthouse => guesthouse.guestHouseId === guesthouseId);
+
+    // ✅ 찜 상태를 토글 (현재 찜 상태면 해제, 아니라면 추가)
+    const newLikeStatus = !isLiked;
+    const requestBody = {
+        memberId: memberId,
+        guestHouseId: guesthouseId,
+        likeReqDto: { flag: newLikeStatus }, // ✅ 여기서 토글
+        bookReqDto: { flag: false },
+        usedReqDto: { flag: false }
+    };
+
+    const url = `http://localhost:9000/status/like`; // ✅ API URL
+
+    try {
+        const response = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(requestBody)
+        });
+
+        if (!response.ok) throw new Error("찜 상태 변경에 실패했습니다.");
+
+        // ✅ 찜 상태 업데이트 성공 시 버튼 UI 변경
+        btn.classList.toggle('active', newLikeStatus);
+        alert(newLikeStatus ? "찜한 게스트하우스에 추가되었습니다!" : "찜한 게스트하우스에서 제거되었습니다!");
+
+    } catch (error) {
+        console.error("찜 토글 오류:", error);
+        alert("찜 상태 변경 중 문제가 발생했습니다.");
+    }
+};
 
 
 
