@@ -19,6 +19,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const token = localStorage.getItem("token");
     const memberId = parseJwt(token).memberId;
 
+
     if (!guesthouseId) {
         alert("잘못된 접근입니다.");
         window.location.href = "/index.html"; // ✅ 잘못된 접근 시 홈으로 이동
@@ -26,10 +27,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     try {
+        fetchMemberInfo(guesthouseId);
         const guesthouseData = await fetchGuesthouseDetail(guesthouseId); // ✅ API 요청
         updateGuesthouseUI(guesthouseData); // ✅ UI 업데이트
         const profileList = await fetchProfiles(guesthouseId); // ✅ 함께 지낼 사람 목록 불러오기
         createProfileCards(profileList); // ✅ 프로필 UI 업데이트
+
         // ✅ 사용자가 '좋아요'를 눌렀는지 확인 후 UI 반영
         await checkIfLiked(guesthouseId, memberId);
         // ✅ 사용자가 게스트하우스를 신청했는지 확인 후 UI 반영
@@ -413,3 +416,21 @@ const checkIfBooked = async (guesthouseId, memberId) => {
     }
 };
 
+async function fetchMemberInfo(memberId) {
+    try {
+        const response = await fetch(`http://127.0.0.1:9000/member/${memberId}`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        console.log(data);
+        // 멤버 정보가 존재하는 경우 업데이트
+        if (data.imgUrl && data.name) {
+            document.querySelector(".left-panel-profile-image").src = data.imgUrl;
+            document.querySelector(".profile-name").textContent = data.name;
+        }
+    } catch (error) {
+        console.error("Error fetching member info:", error);
+    }
+}
