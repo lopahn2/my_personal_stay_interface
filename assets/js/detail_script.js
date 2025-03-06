@@ -6,7 +6,6 @@ function toggleBookmark(btn) {
 
 // New fade-in animations
 const fadeInElements = [
-    '.header',
     '.left-panel',
     '.right-panel',
 
