@@ -167,6 +167,13 @@ const createProfileCards = (profileList, capacity) => {
     // 신청자 수 업데이트: (신청 인원 / 전체 인원)
     document.getElementById('applicantCountText').textContent = `${profileList.length}/${capacity}`;
 
+    // 신청자 수에 따른 score bar 업데이트
+    const scoreBarFill = document.getElementById('mbtiScoreBarFill2');
+    const ratio = (profileList.length / capacity) * 100;
+    setTimeout(() => {
+        scoreBarFill.style.width = `${ratio}%`;
+    }, 500);
+
     profileList.forEach(profile => {
         const card = document.createElement('div');
         card.classList.add('profile-card');
@@ -553,7 +560,14 @@ const checkIfBooked = async (guesthouseId, memberId) => {
 
 async function fetchMemberInfo(memberId) {
     try {
-        const response = await fetch(`http://localhost:9000/member/${memberId}`);
+        const response = await fetch(`http://127.0.0.1:9000/member/${memberId}`,{
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                'Access-Control-Allow-Origin': '*', // 모든 도메인에 대해 CORS 허용
+                mode: 'cors', // CORS 요청 모드 설정
+            }
+        });
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
