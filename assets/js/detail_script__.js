@@ -171,7 +171,9 @@ const createProfileCards = (profileList) => {
 const applyToGuesthouse = async () => {
     const guesthouseId = getGuesthouseIdFromQuery();
     const token = localStorage.getItem("token");
-    const memberId = parseJwt(token).memberId;
+    const decoded = parseJwt(token);
+    const memberId = decoded.memberId;
+    const mbti = decoded.mbti;
 
     // ✅ 이미 신청한 경우 확인
     const bookedGuesthouses = await fetchUserBooks(memberId);
@@ -182,8 +184,8 @@ const applyToGuesthouse = async () => {
         return; // ✅ 신청 중단
     }
 
-    const url = `http://localhost:9000/status/book`; // ✅ API URL
-    const requestBody = {
+    const url_book = `http://localhost:9000/status/book`; // ✅ 신청 API URL
+    const requestBody_book = {
         memberId: memberId,
         guestHouseId: guesthouseId,
         bookReqDto: { flag: true },
@@ -192,16 +194,43 @@ const applyToGuesthouse = async () => {
     };
 
     try {
-        const response = await fetch(url, {
+        // ✅ 신청 요청
+        const response_book = await fetch(url_book, {
             method: "POST",
             headers: {
                 "Authorization": `Bearer ${token}`,
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify(requestBody)
+            body: JSON.stringify(requestBody_book)
         });
 
-        if (!response.ok) throw new Error("게스트하우스 신청에 실패했습니다.");
+        if (!response_book.ok) throw new Error("게스트하우스 신청에 실패했습니다.");
+
+        // ✅ MBTI 점수 갱신 요청 (mbti[0], mbti[1], mbti[2], mbti[3] 각각 요청)
+        const url_update = `http://localhost:9000/scores/update`;
+
+        for (let i = 0; i < 4; i++) {
+            if (!mbti[i]) continue; // ✅ MBTI 문자열이 4자 미만인 경우 방지
+
+            const requestBody_update = {
+                "mbti": mbti[i],  // ✅ 각 자리 문자에 대해 반복
+                "guestHouseId": guesthouseId
+            };
+
+            const response_update = await fetch(url_update, {
+                method: "PUT",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(requestBody_update)
+            });
+
+            if (!response_update.ok) {
+                console.error(`점수 갱신 실패 (${mbti[i]})`);
+            }
+        }
+
         alert("신청이 완료되었습니다!");
 
         // ✅ 신청 성공 후 블러 해제
@@ -213,20 +242,20 @@ const applyToGuesthouse = async () => {
     }
 };
 
+
 /**
  * ✅ 신청 취소하기 API 요청
  */
 const withdrawToGuesthouse = async () => {
     const guesthouseId = getGuesthouseIdFromQuery();
     const token = localStorage.getItem("token");
-    const memberId = parseJwt(token).memberId;
+    const decoded = parseJwt(token);
+    const memberId = decoded.memberId;
+    const mbti = decoded.mbti;
 
     // ✅ 신청 여부 확인
     const bookedGuesthouses = await fetchUserBooks(memberId);
     const isBooked = bookedGuesthouses.some(guesthouse => guesthouse.guestHouseId === guesthouseId);
-    console.log(bookedGuesthouses);
-    console.log(guesthouseId);
-    console.log(isBooked);
     if (!isBooked) {
         alert("취소할 수 없습니다.");
         return; // ✅ 취소 중단
@@ -250,7 +279,6 @@ const withdrawToGuesthouse = async () => {
             },
             body: JSON.stringify(requestBody)
         });
-        console.log(response);
 
         if (!response.ok) throw new Error("게스트하우스 신청 취소에 실패했습니다.");
         alert("취소가 완료되었습니다!");
@@ -272,7 +300,6 @@ const getMemberIdFromJWT = (jwt) => {
     try {
         const payloadBase64 = jwt.split(".")[1]; // JWT의 Payload 부분 추출
         const payloadDecoded = JSON.parse(atob(payloadBase64)); // Base64 디코딩 후 JSON 변환
-        console.log(payloadDecoded);
         return payloadDecoded.memberId; // ✅ memberId 값 반환
     } catch (error) {
         console.error("JWT 디코딩 오류:", error);
@@ -448,8 +475,6 @@ const fetchUserBooks = async (memberId) => {
  */
 const checkIfBooked = async (guesthouseId, memberId) => {
     const BookedGuesthouses = await fetchUserBooks(memberId); // ✅ 사용자의 신청 목록 가져오기
-    console.log(BookedGuesthouses);
-    console.log(guesthouseId);
     // ✅ 신청 목록에 현재 게스트하우스가 포함되어 있는지 확인
     const isBooked = BookedGuesthouses.some(guesthouse => guesthouse.guestHouseId === guesthouseId);
 
