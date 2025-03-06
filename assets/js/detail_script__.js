@@ -20,8 +20,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     const memberId = parseJwt(token).memberId;
 
     if (!guesthouseId) {
-        alert("잘못된 접근입니다.");
-        window.location.href = "/index.html"; // ✅ 잘못된 접근 시 홈으로 이동
+        // alert("잘못된 접근입니다.");
+        // window.location.href = "/index.html"; // ✅ 잘못된 접근 시 홈으로 이동
+        Swal.fire({
+            title: '잘못된 접근',
+            text: '다시 시도해주세요.',
+            icon: 'warning',
+        }).then(function(){
+            location.href="index.html";                   
+        });
         return;
     }
 
@@ -36,7 +43,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         await checkIfBooked(guesthouseId, memberId);
     } catch (error) {
         console.error("데이터 로드 오류:", error);
-        alert("게스트하우스 정보를 불러오는 중 문제가 발생했습니다.");
+        // alert("게스트하우스 정보를 불러오는 중 문제가 발생했습니다.");
+        Swal.fire({
+            // title: '오류 발생',
+            title: '조회 실패',
+            text: '게스트하우스 정보를 불러오지 못했습니다.',
+            icon: 'warning',
+        });
     }
 });
 
@@ -178,7 +191,12 @@ const applyToGuesthouse = async () => {
     const alreadyBooked = bookedGuesthouses.some(guesthouse => guesthouse.guestHouseId === guesthouseId);
     
     if (alreadyBooked) {
-        alert("이미 신청한 게스트하우스입니다.");
+        // alert("이미 신청한 게스트하우스입니다.");
+        Swal.fire({
+            title: '신청 불가',
+            text: '이미 신청한 게스트하우스입니다.',
+            icon: 'info',
+        });
         return; // ✅ 신청 중단
     }
 
@@ -202,14 +220,23 @@ const applyToGuesthouse = async () => {
         });
 
         if (!response.ok) throw new Error("게스트하우스 신청에 실패했습니다.");
-        alert("신청이 완료되었습니다!");
+        // alert("신청이 완료되었습니다!");
+        Swal.fire({
+            title: '신청 완료',
+            icon: 'success',
+        });
 
         // ✅ 신청 성공 후 블러 해제
         document.getElementById('profileSection').classList.remove('profiles-blurred');
 
     } catch (error) {
         console.error("신청 오류:", error);
-        alert("신청 중 문제가 발생했습니다.");
+        // alert("신청 중 문제가 발생했습니다.");
+        Swal.fire({
+            title: '신청 실패',
+            text: '신청 중 문제가 발생했습니다.',
+            icon: 'warning',
+        });
     }
 };
 
@@ -228,7 +255,12 @@ const withdrawToGuesthouse = async () => {
     console.log(guesthouseId);
     console.log(isBooked);
     if (!isBooked) {
-        alert("취소할 수 없습니다.");
+        // alert("취소할 수 없습니다.");
+        Swal.fire({
+            title: '취소 불가',
+            text: '신청하지 않은 게스트하우스입니다.',
+            icon: 'info',
+        });
         return; // ✅ 취소 중단
     }
 
@@ -253,14 +285,23 @@ const withdrawToGuesthouse = async () => {
         console.log(response);
 
         if (!response.ok) throw new Error("게스트하우스 신청 취소에 실패했습니다.");
-        alert("취소가 완료되었습니다!");
+        // alert("취소가 완료되었습니다!");
+        Swal.fire({
+            title: '취소 완료',
+            icon: 'success',
+        });
 
         // ✅ 취소 성공 후 블러 처리
         document.getElementById('profileSection').classList.add('profiles-blurred');
 
     } catch (error) {
         console.error("취소 오류:", error);
-        alert("취소 중 문제가 발생했습니다.");
+        // alert("취소 중 문제가 발생했습니다.");
+        Swal.fire({
+            title: '취소 실패',
+            text: '취소 중 문제가 발생했습니다.',
+            icon: 'warning',
+        });
     }
 };
 
@@ -303,7 +344,11 @@ const toggleBookmark = async (btn) => {
     const memberId = parseJwt(token).memberId;
 
     if (!guesthouseId) {
-        alert("잘못된 접근입니다.");
+        // alert("잘못된 접근입니다.");
+        Swal.fire({
+            title: '잘못된 접근입니다.',
+            icon: 'warning',
+        });
         return;
     }
 
@@ -337,11 +382,20 @@ const toggleBookmark = async (btn) => {
 
         // ✅ 찜 상태 업데이트 성공 시 버튼 UI 변경
         btn.classList.toggle('active', newLikeStatus);
-        alert(newLikeStatus ? "찜한 게스트하우스에 추가되었습니다!" : "찜한 게스트하우스에서 제거되었습니다!");
-
+        // alert(newLikeStatus ? "찜한 게스트하우스에 추가되었습니다!" : "찜한 게스트하우스에서 제거되었습니다!");
+        Swal.fire({
+            title: newLikeStatus ? '찜 완료' : '찜 취소 완료',
+            text: newLikeStatus ? '찜한 게스트하우스에 추가되었습니다.' : "찜한 게스트하우스에서 제거되었습니다.",
+            icon: 'success',
+        });
     } catch (error) {
         console.error("찜 토글 오류:", error);
-        alert("찜 상태 변경 중 문제가 발생했습니다.");
+        // alert("찜 상태 변경 중 문제가 발생했습니다.");
+        Swal.fire({
+            title: '찜 실패',
+            text: '상태 변경 중 문제가 발생했습니다.',
+            icon: 'warning',
+        });
     }
 };
 
@@ -350,8 +404,14 @@ const toggleBookmark = async (btn) => {
 document.querySelector(".logout-btn").addEventListener("click", function (event) {
     event.preventDefault();
     localStorage.removeItem("token");
-    alert("로그아웃되었습니다.");
-    window.location.href = "login.html";
+    // alert("로그아웃되었습니다.");
+    // window.location.href = "login.html";
+    Swal.fire({
+        title: '로그아웃되었습니다.',
+        icon: 'success',
+    }).then(function(){
+        location.href="login.html";                   
+    });
 });
 
 // New fade-in animations
