@@ -88,7 +88,8 @@ const fetchGuesthouseDetail = async (guesthouseId) => {
     const tagsArray = data.tags ? data.tags.split(",").map(tag => tag.trim()) : [];
     // ✅ 현재 사용자 MBTI 기반 점수 찾기
     const userMbti = parseJwt(token).mbti || "ENTP";
-    const matchingScore = data.scores.find(score => score.mbti === userMbti)?.totalScore || 0;
+    const matchingScore = (data.scores.find(score => score.mbti === userMbti)?.totalScore || 0).toFixed(2);
+    console.log(matchingScore);
 
     return {
         guestHouseId: data.guestHouseId,
@@ -150,10 +151,10 @@ const updateMbtiScore = (score) => {
     const mbtiScoreBarFill = document.getElementById('mbtiScoreBarFill');
     const mbtiScoreText = document.getElementById('mbtiScoreText');
 
-    mbtiScoreText.textContent = `${score}%`;
+    mbtiScoreText.textContent = `${score}점`;
     
     setTimeout(() => {
-        mbtiScoreBarFill.style.width = `${score}%`;
+        mbtiScoreBarFill.style.width = `${score}점`;
     }, 500);
 };
 
