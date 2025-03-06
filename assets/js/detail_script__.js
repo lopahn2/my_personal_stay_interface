@@ -280,3 +280,28 @@ document.querySelector(".logout-btn").addEventListener("click", function (event)
     window.location.href = "login.html";
 });
 
+// New fade-in animations
+const fadeInElements = [
+    '.header',
+    '.left-panel',
+    '.right-panel',
+
+    '.mbti-score-container',
+    '.action-buttons',
+    '.profile-container'
+];
+
+// Staggered fade-in animation
+fadeInElements.forEach((selector, index) => {
+    const element = document.querySelector(selector);
+    if (element) {
+        element.style.opacity = '0';
+        element.style.transform = 'translateY(20px)';
+        
+        setTimeout(() => {
+            element.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+            element.style.opacity = '1';
+            element.style.transform = 'translateY(0)';
+        }, 200 * (index + 1)); // Staggered delay
+    }
+});
