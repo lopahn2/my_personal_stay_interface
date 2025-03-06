@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Masonry Layout</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .masonry {
+            column-count: 3; /* 열 개수 */
+            column-gap: 32px; /* 열 간격 */
+        }
+        .masonry-item {
+            background: #f0f0f0;
+            padding: 10px;
+            margin-bottom: 16px; /* 요소 간 간격 */
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1.2rem;
+            display: inline-block;
+            width: 100%; /* 컬럼 내부에서 자동 크기 조정 */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="masonry">
+        <div class="masonry-item" style="height: 120px;">1</div>
+        <div class="masonry-item" style="height: 180px;">2</div>
+        <div class="masonry-item" style="height: 150px;">3</div>
+        <div class="masonry-item" style="height: 200px;">4</div>
+        <div class="masonry-item" style="height: 170px;">5</div>
+        <div class="masonry-item" style="height: 190px;">6</div>
+        <div class="masonry-item" style="height: 130px;">7</div>
+        <div class="masonry-item" style="height: 220px;">8</div>
+    </div>
+
+</body>
+</html>

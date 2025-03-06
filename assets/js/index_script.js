@@ -100,6 +100,7 @@ document.addEventListener("DOMContentLoaded", function () {
         .then(response => response.json())
         .then(data => {
             const cardContainer = document.getElementById("card-container");
+            
             data.forEach(item => {
                 // item은 GuestHouseRes 객체이며, item.scores는 ScoreRes 배열입니다.
                 // 로그인한 사용자의 MBTI와 일치하는 score를 찾아 totalScore를 표시합니다.
@@ -109,8 +110,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 // 카드 UI 생성
                 const cardHTML = `
-                    <div class="col-sm-6 col-md-4">
-                        <div class="card" style="width: 18rem;">
+                    <div>
+                        <div class="card">
                             <img src="${item.bgImgUrl}" class="card-img-top" alt="${item.name}">
                             <div class="card-body">
                                 <h5 class="card-title">${item.name}</h5>
@@ -120,8 +121,11 @@ document.addEventListener("DOMContentLoaded", function () {
                         </div>
                     </div>
                 `;
+
                 cardContainer.innerHTML += cardHTML;
             });
+
+
         })
         .catch(error => console.error("Error fetching guesthouse list:", error));
 
