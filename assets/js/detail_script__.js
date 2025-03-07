@@ -288,6 +288,25 @@ const applyToGuesthouse = async () => {
         document.getElementById('profileSection').classList.remove('profiles-blurred');
         updateApplicantCount(1);
 
+        // 신청 시 프로필 리스트에 추가
+        const profileContainer = document.getElementById('profileContainer');
+
+        const card = document.createElement('div');
+        card.classList.add('profile-card');
+
+        card.innerHTML = `
+            <img src="${decoded.imgUrl}" alt="${decoded.name}" class="profile-image">
+            <div class="profile-name">${decoded.name}</div>
+            <div class="profile-info">${decoded.age}세 · ${decoded.sex === 'M' ? '남성' : '여성'} · ${decoded.mbti}</div>
+            <div class="profile-intro">"${decoded.introduce}"</div>
+            <div class="profile-tags">
+                <span class="profile-tag">🍽 ${decoded.favorite}</span>
+                <span class="profile-tag">🍷 ${decoded.alcoholLimit}</span>
+            </div>
+        `;
+        const firstChild = profileContainer.children[0];
+        profileContainer.insertBefore(card, firstChild);
+        
     } catch (error) {
         console.error("신청 오류:", error);
         // alert("신청 중 문제가 발생했습니다.");
@@ -352,6 +371,10 @@ const withdrawToGuesthouse = async () => {
         // ✅ 취소 성공 후 블러 처리
         document.getElementById('profileSection').classList.add('profiles-blurred');
         updateApplicantCount(-1);
+
+        // 취소 성공 후 
+        findProfileByName(decoded.name).remove();
+        
 
     } catch (error) {
         console.error("취소 오류:", error);
@@ -617,3 +640,23 @@ const updateApplicantCount = (change) => {
     // ✅ 진행 바 너비 업데이트 (비율 계산)
     progressBar.style.width = `${(current / max) * 100}%`;
 };
+
+function findProfileByName(name) {
+    const container = document.getElementById('profileContainer');
+    if (!container) {
+        console.error("Container element not found");
+        return null;
+    }
+
+    const profileCards = container.getElementsByClassName('profile-card');
+
+    for (let card of profileCards) {
+        const profileNameElement = card.querySelector('.profile-name');
+        if (profileNameElement && profileNameElement.textContent.trim() === name) {
+            console.log(profileNameElement.textContent.trim());
+            return card; // 해당 profile-card 요소 반환
+        }
+    }
+
+    return null; // 찾지 못한 경우 null 반환
+}
