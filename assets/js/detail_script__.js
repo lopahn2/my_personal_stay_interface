@@ -154,7 +154,7 @@ const updateMbtiScore = (score) => {
     mbtiScoreText.textContent = `${score}점`;
     
     setTimeout(() => {
-        mbtiScoreBarFill.style.width = `${score}점`;
+        mbtiScoreBarFill.style.width = `${score}%`;
     }, 500);
 };
 
